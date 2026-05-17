@@ -1,0 +1,367 @@
+﻿@import "tailwindcss";
+
+:root {
+  --background: #080808;
+  --surface: #111111;
+  --surface-soft: #171717;
+  --text: #f5f5f5;
+  --muted: #a3a3a3;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #d4af37;
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--text);
+  --font-sans: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Courier New", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.28);
+  color: var(--text);
+}
+
+.container-page {
+  width: min(100% - 32px, 1120px);
+  margin-inline: auto;
+}
+
+.transition-premium {
+  transition-duration: 180ms;
+  transition-timing-function: var(--ease-premium);
+}
+
+.nav-link {
+  color: var(--muted);
+  transition: color 180ms var(--ease-premium);
+}
+
+.nav-link:hover {
+  color: var(--text);
+}
+
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1;
+  min-height: 40px;
+  transition:
+    background-color 180ms var(--ease-premium),
+    border-color 180ms var(--ease-premium),
+    color 180ms var(--ease-premium),
+    opacity 180ms var(--ease-premium),
+    transform 180ms var(--ease-premium);
+  will-change: transform;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #080808;
+}
+
+.btn-primary:hover {
+  background: #e0c35a;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: transparent;
+}
+
+.btn-secondary:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  background: var(--surface);
+  transform: translateY(-1px);
+}
+
+.btn-secondary[class*="text-red"]:hover {
+  border-color: rgba(248, 113, 113, 0.32);
+  background: rgba(239, 68, 68, 0.1);
+  color: rgb(254, 226, 226);
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+.hover-lift {
+  transition:
+    border-color 220ms var(--ease-premium),
+    box-shadow 220ms var(--ease-premium),
+    color 220ms var(--ease-premium),
+    transform 220ms var(--ease-premium);
+}
+
+.hover-lift:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  transform: translateY(-3px);
+}
+
+input,
+textarea,
+select {
+  transition:
+    border-color 180ms var(--ease-premium),
+    box-shadow 180ms var(--ease-premium),
+    background-color 180ms var(--ease-premium),
+    transform 180ms var(--ease-premium);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(163, 163, 163, 0.62);
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.focus-premium:focus {
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.12);
+}
+
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.animate-page-in,
+.page-transition,
+.dashboard-page-transition {
+  animation: pageFadeIn 220ms var(--ease-premium) both;
+}
+
+.animate-card-in {
+  animation: cardFadeIn 220ms var(--ease-premium) both;
+}
+
+.animate-result-in {
+  animation: resultFadeIn 220ms var(--ease-premium) both;
+}
+
+.skeleton-pulse,
+.animate-pulse {
+  animation: premiumPulse 1.8s var(--ease-premium) infinite !important;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes resultFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes profileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes profileMenuOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+@keyframes premiumPulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  50% {
+    opacity: 0.42;
+  }
+}
+
+@media (hover: hover) {
+  :where(article, section, div)[class*="rounded-2xl"][class*="border"][class*="shadow-xl"] {
+    transition:
+      border-color 220ms var(--ease-premium),
+      box-shadow 220ms var(--ease-premium),
+      transform 220ms var(--ease-premium);
+    will-change: transform;
+  }
+
+  :where(article, section, div)[class*="rounded-2xl"][class*="border"][class*="shadow-xl"]:hover {
+    border-color: rgba(212, 175, 55, 0.24);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .animate-fade-up,
+  .animate-fade-scale,
+  .animate-page-in,
+  .animate-card-in,
+  .animate-result-in,
+  .page-transition,
+  .dashboard-page-transition {
+    animation-name: reducedFadeIn !important;
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .hover-lift:hover,
+  :where(article, section, div)[class*="rounded-2xl"][class*="border"][class*="shadow-xl"]:hover {
+    transform: none !important;
+  }
+}
+
+@keyframes reducedFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.profile-menu-open {
+  animation: profileMenuIn 180ms var(--ease-premium) both;
+}
+
+.profile-menu-closed {
+  animation: profileMenuOut 180ms var(--ease-premium) both;
+}
+
+
+
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUpVisible 500ms var(--ease-premium) both;
+  animation-fill-mode: both;
+}
+
+.animate-fade-scale {
+  opacity: 0;
+  animation: fadeScaleVisible 500ms var(--ease-premium) both;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeUpVisible {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeScaleVisible {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
