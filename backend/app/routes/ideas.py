@@ -43,10 +43,22 @@ def analyze_idea(
             target_audience=request.target_audience,
         )
     except ValueError as error:
+        detail = str(error)
+        if (
+            "OPENROUTER_API_KEY" in detail
+            or "OpenAI SDK is not installed" in detail
+            or "OpenRouter request failed" in detail
+            or "AI response invalid" in detail
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=detail,
+            ) from error
+
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(error),
-        )
+            detail=detail,
+        ) from error
 
     try:
         saved_analysis = Analysis(

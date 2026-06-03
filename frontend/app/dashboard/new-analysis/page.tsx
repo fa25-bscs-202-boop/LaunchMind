@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 // Navbar is provided globally in layout
-import { apiRequest, isUnauthorizedError } from "../../../lib/api";
+import { apiRequest, ApiError, isUnauthorizedError } from "../../../lib/api";
 import { getToken, logoutUser } from "../../../lib/auth";
 
 type AnalysisResult = {
@@ -228,7 +228,11 @@ export default function NewAnalysisPage() {
         return;
       }
 
-      setRequestError("We could not analyze this idea right now. Please check your connection and try again.");
+      if (error instanceof ApiError) {
+        setRequestError(error.message);
+      } else {
+        setRequestError("We could not analyze this idea right now. Please check your connection and try again.");
+      }
     } finally {
       setIsLoading(false);
     }
