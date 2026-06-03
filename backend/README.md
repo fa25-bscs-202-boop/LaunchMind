@@ -41,3 +41,15 @@ The default database is SQLite.
 The default database file name is `launchmind.db`.
 
 `DATABASE_URL` can be changed in `.env` later.
+
+## Email / SMTP
+
+Verification emails use SMTP settings from `.env`:
+
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `SMTP_FROM_EMAIL`
+
+If SMTP is not configured, verification codes are printed to the backend console for development.

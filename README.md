@@ -1,2 +1,2 @@
-# Launch-Mind
-Ai Startup Fizibility 
+# LaunchMind-AI
+# LaunchMind-AI

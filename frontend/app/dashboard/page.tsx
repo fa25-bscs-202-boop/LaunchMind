@@ -94,7 +94,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-        <Navbar />
+        
         <section className="px-4 py-20 sm:py-28">
           <div className="container-page">
             <div className="max-w-3xl">
@@ -123,7 +123,7 @@ export default function DashboardPage() {
   if (authError) {
     return (
       <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-        <Navbar />
+        
         <section className="px-4 py-20 sm:py-28">
           <div className="container-page">
             <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6 text-sm text-red-100">
@@ -141,7 +141,7 @@ export default function DashboardPage() {
 
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-      <Navbar />
+      
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page">
           <div className="max-w-3xl">

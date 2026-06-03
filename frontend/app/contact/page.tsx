@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { type FormEvent, useState } from "react";
-import { Navbar } from "../components/Navbar";
+// Navbar is provided globally in layout
 
 export default function ContactPage() {
   const [message, setMessage] = useState("");
@@ -13,7 +13,6 @@ export default function ContactPage() {
 
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-      <Navbar />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>

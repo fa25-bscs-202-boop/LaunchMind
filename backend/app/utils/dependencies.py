@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -7,38 +7,52 @@ from app.models.user import User
 from app.utils.security import decode_access_token
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token", auto_error=False)
+
+
+GUEST_EMAIL = "guest@launchmind.local"
+
+
+def get_or_create_guest_user(db: Session) -> User:
+    user = db.query(User).filter(User.email == GUEST_EMAIL).first()
+
+    if user:
+        return user
+
+    user = User(
+        name="Guest",
+        email=GUEST_EMAIL,
+        password_hash="guest-login-disabled",
+        provider="guest",
+        provider_id="local",
+        is_verified=True,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    token: str | None = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
+    if not token:
+        return get_or_create_guest_user(db)
+
     payload = decode_access_token(token)
 
     if not payload:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return get_or_create_guest_user(db)
 
     email = payload.get("sub")
 
     if not email:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return get_or_create_guest_user(db)
 
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return get_or_create_guest_user(db)
 
     return user

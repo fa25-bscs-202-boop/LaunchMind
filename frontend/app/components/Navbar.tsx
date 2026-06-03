@@ -50,7 +50,7 @@ export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [hasToken, setHasToken] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [shouldRenderProfileMenu, setShouldRenderProfileMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     async function loadUser() {
@@ -84,24 +84,23 @@ export function Navbar() {
 
   useEffect(() => {
     closeProfileMenu();
+    closeMobileMenu();
   }, [pathname]);
-
-  useEffect(() => {
-    if (isProfileOpen) {
-      setShouldRenderProfileMenu(true);
-      return;
-    }
-
-    const timeout = window.setTimeout(() => setShouldRenderProfileMenu(false), 180);
-    return () => window.clearTimeout(timeout);
-  }, [isProfileOpen]);
 
   function closeProfileMenu() {
     setIsProfileOpen(false);
   }
 
+  function closeMobileMenu() {
+    setIsMobileMenuOpen(false);
+  }
+
   function toggleProfileMenu() {
     setIsProfileOpen((current) => !current);
+  }
+
+  function toggleMobileMenu() {
+    setIsMobileMenuOpen((current) => !current);
   }
 
   function handleLogout() {
@@ -109,6 +108,7 @@ export function Navbar() {
     setUser(null);
     setHasToken(false);
     closeProfileMenu();
+    closeMobileMenu();
     router.push("/login");
   }
 
@@ -129,17 +129,33 @@ export function Navbar() {
   const displayName = user?.name || "Account";
   const initial = displayName.charAt(0).toUpperCase() || "A";
 
-  return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[rgba(8,8,8,0.82)] backdrop-blur-md">
-      <nav className="container-page flex h-[72px] items-center justify-between">
-        <Link
-          href={hasToken ? "/dashboard" : "/"}
-          className="text-[1.05rem] font-bold tracking-[-0.02em] text-[var(--text)] transition-colors duration-[180ms] ease-out hover:text-[#f8f8f8]"
-        >
-          LaunchMind AI
-        </Link>
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove("sidebar-open");
+    };
+  }, []);
 
-        <div className="hidden items-center gap-3 text-sm font-medium lg:flex xl:gap-5">
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.classList.add("sidebar-open");
+    } else {
+      document.body.classList.remove("sidebar-open");
+    }
+  }, [isMobileMenuOpen]);
+
+  return (
+    <>
+      <aside className="fixed top-4 bottom-4 left-0 z-50 hidden w-[280px] flex-col gap-6 overflow-y-auto border-r border-[var(--border)] bg-[rgba(8,8,8,0.96)] px-5 py-6 text-[var(--text)] backdrop-blur-xl lg:flex">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            href={hasToken ? "/dashboard" : "/"}
+            className="text-lg font-semibold tracking-[-0.02em] text-[var(--text)] transition-colors duration-[180ms] ease-out hover:text-[#f8f8f8]"
+          >
+            LaunchMind AI
+          </Link>
+        </div>
+
+        <div className="space-y-1 text-sm font-medium">
           {links.map((link) => {
             const isActive = isActiveLink(link.href);
 
@@ -147,87 +163,168 @@ export function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`group relative pb-1.5 transition-colors duration-[180ms] ease-out ${
-                  isActive ? "text-[var(--text)]" : "text-[var(--muted)] hover:text-[var(--text)]"
+                className={`block rounded-2xl px-4 py-3 transition duration-[180ms] ease-out ${
+                  isActive
+                    ? "bg-[rgba(212,175,55,0.14)] text-[var(--text)]"
+                    : "text-[var(--muted)] hover:bg-[rgba(212,175,55,0.08)] hover:text-[var(--text)]"
                 }`}
               >
                 {link.label}
-                <span
-                  className={`absolute inset-x-0 -bottom-0.5 h-px origin-center rounded-full bg-[var(--accent)] transition-all duration-[180ms] ease-out ${
-                    isActive
-                      ? "scale-x-100 opacity-100"
-                      : "scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-45"
-                  }`}
-                />
               </Link>
             );
           })}
+        </div>
 
+        <div className="mt-auto space-y-4">
           {hasToken ? (
-            <div className="relative flex items-center">
-              <button
-                type="button"
-                className="group flex h-11 items-center gap-2.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 text-sm text-[var(--text)] transition-[background-color,border-color,transform] duration-[180ms] ease-out hover:-translate-y-px hover:border-[rgba(212,175,55,0.35)] hover:bg-[var(--surface-soft)] active:translate-y-0 active:scale-[0.99]"
-                onClick={toggleProfileMenu}
-                aria-expanded={isProfileOpen}
-                aria-haspopup="menu"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#080808] transition duration-[180ms] ease-out group-hover:brightness-110">
+            <div className="space-y-3 rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)] text-sm font-bold text-[#080808]">
                   {initial}
                 </span>
-                <span className="max-w-28 truncate font-medium leading-none">
-                  {displayName}
-                </span>
-                <ChevronDownIcon isOpen={isProfileOpen} />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-[var(--text)]">{displayName}</p>
+                  {user?.email ? (
+                    <p className="truncate text-xs text-[var(--muted)]">{user.email}</p>
+                  ) : null}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="w-full rounded-full border border-transparent bg-red-500/10 px-4 py-3 text-sm font-medium text-red-100 transition duration-[180ms] ease-out hover:bg-red-500/20"
+                onClick={handleLogout}
+              >
+                Logout
               </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <Link
+                href="/login"
+                className="block rounded-2xl border border-[var(--border)] px-4 py-3 text-sm font-medium text-[var(--text)] transition duration-[180ms] ease-out hover:bg-[rgba(212,175,55,0.08)] hover:text-[var(--text)]"
+              >
+                Login
+              </Link>
+              <Link href="/register" className="btn-primary block rounded-full px-4 py-3 text-center text-sm font-semibold">
+                Register
+              </Link>
+            </div>
+          )}
+        </div>
+      </aside>
 
-              {shouldRenderProfileMenu ? (
-                <div
-                  className={`absolute right-0 top-[calc(100%+12px)] w-[280px] origin-top-right rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 shadow-xl shadow-black/25 ${
-                    isProfileOpen
-                      ? "profile-menu-open"
-                      : "pointer-events-none profile-menu-closed"
-                  }`}
-                  role="menu"
-                >
-                  <div>
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
-                      Account
-                    </p>
-                    <p className="mt-3 truncate text-sm font-semibold text-[var(--text)]">
-                      {displayName}
-                    </p>
-                    {user?.email ? (
-                      <p className="mt-1 truncate text-xs leading-5 text-[var(--muted)]">
-                        {user.email}
-                      </p>
-                    ) : null}
+      <div className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[rgba(8,8,8,0.92)] px-4 py-4 text-[var(--text)] lg:hidden">
+        <Link
+          href={hasToken ? "/dashboard" : "/"}
+          className="text-base font-semibold tracking-[-0.02em] text-[var(--text)]"
+        >
+          LaunchMind AI
+        </Link>
+        <button
+          type="button"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition duration-[180ms] ease-out hover:border-[rgba(212,175,55,0.35)] hover:bg-[var(--surface-soft)]"
+          onClick={toggleMobileMenu}
+          aria-label={isMobileMenuOpen ? "Close sidebar" : "Open sidebar"}
+          aria-expanded={isMobileMenuOpen}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+            <path d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 7h16M4 12h16M4 17h16"} strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      {isMobileMenuOpen ? (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={toggleMobileMenu}
+            aria-label="Close sidebar"
+          />
+          <aside className="relative z-10 flex w-72 flex-col gap-6 overflow-y-auto border-r border-[var(--border)] bg-[rgba(8,8,8,0.96)] px-5 py-6 text-[var(--text)] backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-4">
+              <Link
+                href={hasToken ? "/dashboard" : "/"}
+                className="text-lg font-semibold tracking-[-0.02em] text-[var(--text)]"
+              >
+                LaunchMind AI
+              </Link>
+              <button
+                type="button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition duration-[180ms] ease-out hover:border-[rgba(212,175,55,0.35)] hover:bg-[var(--surface-soft)]"
+                onClick={toggleMobileMenu}
+                aria-label="Close sidebar"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+                  <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-1 text-sm font-medium">
+              {links.map((link) => {
+                const isActive = isActiveLink(link.href);
+
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className={`block rounded-2xl px-4 py-3 transition duration-[180ms] ease-out ${
+                      isActive
+                        ? "bg-[rgba(212,175,55,0.14)] text-[var(--text)]"
+                        : "text-[var(--muted)] hover:bg-[rgba(212,175,55,0.08)] hover:text-[var(--text)]"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="mt-auto space-y-4">
+              {hasToken ? (
+                <div className="space-y-3 rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)] text-sm font-bold text-[#080808]">
+                      {initial}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[var(--text)]">{displayName}</p>
+                      {user?.email ? (
+                        <p className="truncate text-xs text-[var(--muted)]">{user.email}</p>
+                      ) : null}
+                    </div>
                   </div>
-
-                  <div className="my-4 h-px bg-[var(--border)]" />
 
                   <button
                     type="button"
-                    className="flex w-full items-center justify-center rounded-full border border-transparent px-4 py-2.5 text-sm font-medium text-[var(--muted)] transition-[background-color,border-color,color,transform] duration-[180ms] ease-out hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-100 active:scale-[0.98]"
+                    className="w-full rounded-full border border-transparent bg-red-500/10 px-4 py-3 text-sm font-medium text-red-100 transition duration-[180ms] ease-out hover:bg-red-500/20"
                     onClick={handleLogout}
-                    role="menuitem"
                   >
                     Logout
                   </button>
                 </div>
-              ) : null}
+              ) : (
+                <div className="space-y-3">
+                  <Link
+                    href="/login"
+                    className="block rounded-2xl border border-[var(--border)] px-4 py-3 text-sm font-medium text-[var(--text)] transition duration-[180ms] ease-out hover:bg-[rgba(212,175,55,0.08)] hover:text-[var(--text)]"
+                  >
+                    Login
+                  </Link>
+                  <Link href="/register" className="btn-primary block rounded-full px-4 py-3 text-center text-sm font-semibold">
+                    Register
+                  </Link>
+                </div>
+              )}
             </div>
-          ) : (
-            <Link href="/register" className="btn-secondary px-4 py-2">
-              Register
-            </Link>
-          )}
+          </aside>
         </div>
-      </nav>
-    </header>
+      ) : null}
+    </>
   );
 }
-
 
 
 

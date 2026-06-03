@@ -75,6 +75,11 @@ def save_new_verification_code(user: User, db: Session) -> str:
     return code
 
 
+def delete_unverified_user(user: User, db: Session) -> None:
+    db.delete(user)
+    db.commit()
+
+
 def send_code_or_raise(email: str, code: str):
     try:
         send_verification_email(email, code)
@@ -112,11 +117,14 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
 
     existing_user = db.query(User).filter(User.email == email).first()
 
-    if existing_user:
+    if existing_user and existing_user.is_verified:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered",
         )
+
+    if existing_user and not existing_user.is_verified:
+        delete_unverified_user(existing_user, db)
 
     code = generate_verification_code()
     user = User(
@@ -206,7 +214,13 @@ def login_user(user_data: UserLogin, db: Session = Depends(get_db)):
             detail="Invalid email or password",
         )
 
-    ensure_verified_user_can_login(user)
+    if not user.is_verified:
+        code = save_new_verification_code(user, db)
+        send_code_or_raise(email, code)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email not verified. A new verification code was sent.",
+        )
 
     access_token = create_access_token(data={"sub": user.email})
 
@@ -237,6 +251,15 @@ def login_for_access_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not user.is_verified:
+        code = save_new_verification_code(user, db)
+        send_code_or_raise(email, code)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email not verified. A new verification code was sent.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

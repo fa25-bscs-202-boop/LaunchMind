@@ -1,10 +1,9 @@
 ﻿import Link from "next/link";
-import { Navbar } from "../components/Navbar";
+// Navbar is provided globally in layout
 
 export default function AboutPage() {
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-      <Navbar />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>

@@ -1,6 +1,14 @@
 ﻿import { apiRequest } from "./api";
 
 const TOKEN_KEY = "launchmind_token";
+const GUEST_TOKEN = "launchmind_guest";
+
+const guestUser: User = {
+  id: 0,
+  name: "Guest",
+  email: "guest@launchmind.local",
+  created_at: new Date(0).toISOString(),
+};
 
 export type User = {
   id: number;
@@ -34,10 +42,10 @@ export function saveToken(token: string) {
 
 export function getToken() {
   if (typeof window === "undefined") {
-    return null;
+    return GUEST_TOKEN;
   }
 
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(TOKEN_KEY) || GUEST_TOKEN;
 }
 
 export function logoutUser() {
@@ -84,8 +92,11 @@ export async function loginUser(email: string, password: string) {
 }
 
 export async function getCurrentUser() {
-  return apiRequest<User>("/auth/me", {
-    method: "GET",
-  });
+  try {
+    return await apiRequest<User>("/auth/me", {
+      method: "GET",
+    });
+  } catch {
+    return guestUser;
+  }
 }
-

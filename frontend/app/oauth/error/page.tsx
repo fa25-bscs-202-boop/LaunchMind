@@ -1,19 +1,9 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function OAuthErrorPage() {
-  const [message, setMessage] = useState("Authentication failed. Please try again.");
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const errorMessage = params.get("message");
-
-    if (errorMessage) {
-      setMessage("Authentication failed. Please try again.");
-    }
-  }, []);
+  const message = "Authentication failed. Please try again.";
 
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] px-4 py-20 text-[var(--text)] sm:py-28">
@@ -32,7 +22,6 @@ export default function OAuthErrorPage() {
     </main>
   );
 }
-
 
 
 

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Navbar } from "../../../components/Navbar";
+// Navbar is provided globally in layout
 import { apiRequest, isUnauthorizedError } from "../../../../lib/api";
 import { getToken, logoutUser } from "../../../../lib/auth";
 
@@ -173,7 +173,6 @@ export default function CompetitorDetailPage() {
 
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-      <Navbar />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page">
           <Link href="/dashboard/competitors" className="nav-link text-sm">

@@ -1,5 +1,5 @@
 ﻿import Link from "next/link";
-import { Navbar } from "../components/Navbar";
+// Navbar is provided globally in layout
 
 const detailedFeatures = [
   {
@@ -43,7 +43,6 @@ const detailedFeatures = [
 export default function FeaturesPage() {
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
-      <Navbar />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page">
           <div className="max-w-3xl">
