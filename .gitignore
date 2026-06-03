@@ -1,6 +1,12 @@
 # Ignore local environment and secret files
-.env*
-**/.env*
+.env
+.env.local
+.env.development
+.env.production
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
 
 # Python virtual environments and caches
 backend/.venv/
