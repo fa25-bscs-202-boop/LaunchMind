@@ -13,7 +13,7 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  function redirectToOAuth(provider: "google" | "github") {
+  function redirectToOAuth(provider: "google") {
     window.location.href = `${API_BASE_URL}/auth/${provider}/login`;
   }
 
@@ -51,13 +51,6 @@ export function LoginForm() {
           className="btn-secondary w-full gap-2"
         >
           Continue with Google
-        </button>
-        <button
-          type="button"
-          onClick={() => redirectToOAuth("github")}
-          className="btn-secondary w-full gap-2"
-        >
-          Continue with GitHub
         </button>
       </div>
 
@@ -112,7 +105,6 @@ export function LoginForm() {
     </div>
   );
 }
-
 
 
 
