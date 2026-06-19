@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "LaunchMind AI",
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://launchmind.ai").replace(/\/$/, ""),
-  description:
-    "LaunchMind AI helps founders, students, and job seekers turn rough ideas into startup plans, business names, resumes, cover letters, and launch-ready documents.",
+  name: "LaunchMind",
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://launchmind.app").replace(/\/$/, ""),
+  description: "AI-powered content platform for GEO, SEO and AI search.",
   ogImage: "/launchmind-og.svg",
   locale: "en_US",
 };
@@ -93,14 +92,14 @@ export function createMetadata({
 }
 
 export const defaultMetadata = createMetadata({
-  title: "LaunchMind AI | Startup Idea Generator and AI Planning Tools",
+  title: "LaunchMind - AI Content Platform for GEO, SEO & AI Search",
   description: siteConfig.description,
   path: "/",
   keywords: [
-    "LaunchMind AI",
-    "startup idea generator",
-    "AI tools",
-    "business name generator",
-    "startup planning software",
+    "LaunchMind",
+    "GEO content",
+    "SEO content",
+    "AI search",
+    "content platform",
   ],
 });

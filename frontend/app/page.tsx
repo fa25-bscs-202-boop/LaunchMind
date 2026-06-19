@@ -4,16 +4,15 @@ import { ScrollRevealActivator } from "./components/ScrollRevealActivator";
 import { createMetadata } from "../lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "LaunchMind AI | Startup Idea Generator and AI Planning Tools",
-  description:
-    "Use LaunchMind AI to generate startup ideas, business names, feasibility reports, pitch decks, SWOT analysis, MVP plans, resumes, and cover letters.",
+  title: "LaunchMind - AI Content Platform for GEO, SEO & AI Search",
+  description: "AI-powered content platform for GEO, SEO and AI search.",
   path: "/",
   keywords: [
-    "LaunchMind AI",
-    "startup idea generator",
-    "AI business tools",
-    "feasibility report generator",
-    "MVP planner",
+    "LaunchMind",
+    "GEO content",
+    "SEO content",
+    "AI search",
+    "content platform",
   ],
 });
 
