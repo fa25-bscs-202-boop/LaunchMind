@@ -1,30 +1,37 @@
-﻿import { AuthHeader } from "../components/AuthHeader";
+import type { Metadata } from "next";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthHeader } from "../components/AuthHeader";
 import { LoginForm } from "./LoginForm";
+import { createMetadata } from "../../lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Log In to LaunchMind AI",
+  description:
+    "Log in to LaunchMind AI to continue startup planning, reports, pitch decks, resumes, cover letters, and saved AI outputs.",
+  path: "/login",
+  noIndex: true,
+});
 
 export default function LoginPage() {
   return (
-    <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
+    <main className="min-h-screen bg-[var(--background)] text-foreground">
       <AuthHeader />
-      <section className="flex min-h-[calc(100vh-72px)] items-center px-4 py-6 sm:py-8">
-        <div className="container-page">
-          <div className="animate-fade-up hover-lift mx-auto max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-6 shadow-xl shadow-black/20 sm:p-7">
-            <h1 className="text-3xl font-bold tracking-[-0.04em]">
-              Welcome back.
-            </h1>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-              Access your startup workspace and continue building your ideas.
-            </p>
-
-            <LoginForm />
-          </div>
+      <section className="flex min-h-[calc(100vh-72px)] items-center px-4 py-8 sm:py-12">
+        <div className="container-page flex w-full justify-center">
+          <Card className="mx-auto w-full max-w-md border-border/90 bg-card/95">
+            <CardHeader className="p-6 pb-3 text-center sm:p-7 sm:pb-3">
+              <CardTitle className="text-3xl">Welcome back</CardTitle>
+              <CardDescription>
+                Log in to access your LaunchMind workspace.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 pt-0 sm:p-7 sm:pt-0">
+              <LoginForm />
+            </CardContent>
+          </Card>
         </div>
       </section>
     </main>
   );
 }
-
-
-
-
-
-

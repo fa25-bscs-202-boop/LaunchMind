@@ -1,15 +1,32 @@
-﻿import { Suspense } from "react";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { VerifyEmailForm } from "./verify-form";
+import { createMetadata } from "../../lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Verify Your LaunchMind AI Email",
+  description:
+    "Verify your email address to finish setting up your LaunchMind AI workspace.",
+  path: "/verify-email",
+  noIndex: true,
+});
 
 function VerifyEmailLoadingFallback() {
   return (
-    <main className="animate-fade-up flex min-h-screen items-center bg-[var(--background)] px-4 py-6 text-[var(--text)] sm:py-8">
+    <main className="flex min-h-screen items-center bg-background px-4 py-8 text-foreground sm:py-12">
       <section className="container-page">
-        <div className="animate-fade-up hover-lift mx-auto max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-6 shadow-xl shadow-black/20 sm:p-7">
-          <div className="h-6 w-24 animate-pulse rounded bg-[var(--muted)]" />
-          <div className="mt-6 h-8 w-3/4 animate-pulse rounded bg-[var(--muted)]" />
-          <div className="mt-4 h-4 w-full animate-pulse rounded bg-[var(--muted)]" />
-        </div>
+        <Card className="mx-auto w-full max-w-md">
+          <CardHeader className="items-center p-7 pb-3">
+            <div className="size-12 animate-pulse rounded-full bg-white/10" />
+            <div className="mt-3 h-8 w-3/4 animate-pulse rounded bg-white/10" />
+          </CardHeader>
+          <CardContent className="p-7 pt-0">
+            <div className="h-12 w-full animate-pulse rounded-lg bg-white/10" />
+            <div className="mt-4 h-11 w-full animate-pulse rounded-full bg-white/10" />
+          </CardContent>
+        </Card>
       </section>
     </main>
   );
@@ -22,8 +39,3 @@ export default function VerifyEmailPage() {
     </Suspense>
   );
 }
-
-
-
-
-

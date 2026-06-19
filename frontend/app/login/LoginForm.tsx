@@ -1,8 +1,15 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { Globe, Lock, Mail } from "lucide-react";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { API_BASE_URL } from "../../lib/api";
 import { loginUser } from "../../lib/auth";
 
@@ -10,6 +17,7 @@ export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,23 +25,37 @@ export function LoginForm() {
     window.location.href = `${API_BASE_URL}/auth/${provider}/login`;
   }
 
+  function validateForm() {
+    const nextErrors = { email: "", password: "" };
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail) {
+      nextErrors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+
+    if (!password) {
+      nextErrors.password = "Password is required.";
+    } else if (password.length < 6) {
+      nextErrors.password = "Password must be at least 6 characters.";
+    }
+
+    setFieldErrors(nextErrors);
+    return !nextErrors.email && !nextErrors.password;
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
 
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (!validateForm()) {
       return;
     }
 
     try {
       setIsLoading(true);
-      await loginUser(email, password);
+      await loginUser(email.trim(), password);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
@@ -43,61 +65,99 @@ export function LoginForm() {
   }
 
   return (
-    <div className="mt-6">
+    <div className="mt-7">
       <div className="grid gap-3">
-        <button
+        <Button
           type="button"
           onClick={() => redirectToOAuth("google")}
-          className="btn-secondary w-full gap-2"
+          variant="secondary"
+          className="w-full"
         >
+          <Globe className="size-4" aria-hidden="true" />
           Continue with Google
-        </button>
+        </Button>
       </div>
 
-      <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
-        <span className="h-px flex-1 bg-[var(--border)]" />
+      <div className="my-6 flex items-center gap-3 text-xs font-medium uppercase text-muted-foreground">
+        <Separator className="flex-1" />
         <span>Email login</span>
-        <span className="h-px flex-1 bg-[var(--border)]" />
+        <Separator className="flex-1" />
       </div>
 
-      <form onSubmit={handleSubmit} noValidate>
-        <label className="block text-sm font-medium text-[var(--text)]" htmlFor="email">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[rgba(212,175,55,0.45)]"
-        />
+      <form className="grid gap-4" onSubmit={handleSubmit} noValidate>
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <div className="relative">
+            <Mail
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setFieldErrors((current) => ({ ...current, email: "" }));
+              }}
+              aria-invalid={Boolean(fieldErrors.email)}
+              aria-describedby={fieldErrors.email ? "email-error" : undefined}
+              autoComplete="email"
+              placeholder="you@example.com"
+              className="pl-10"
+            />
+          </div>
+          {fieldErrors.email ? (
+            <p id="email-error" className="text-sm leading-5 text-red-200">
+              {fieldErrors.email}
+            </p>
+          ) : null}
+        </div>
 
-        <label className="mt-4 block text-sm font-medium text-[var(--text)]" htmlFor="password">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[rgba(212,175,55,0.45)]"
-        />
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <div className="relative">
+            <Lock
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setFieldErrors((current) => ({ ...current, password: "" }));
+              }}
+              aria-invalid={Boolean(fieldErrors.password)}
+              aria-describedby={fieldErrors.password ? "password-error" : undefined}
+              autoComplete="current-password"
+              placeholder="Enter your password"
+              className="pl-10"
+            />
+          </div>
+          {fieldErrors.password ? (
+            <p id="password-error" className="text-sm leading-5 text-red-200">
+              {fieldErrors.password}
+            </p>
+          ) : null}
+        </div>
 
         {error ? (
-          <p className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-            {error}
-          </p>
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         ) : null}
 
-        <button type="submit" className="btn-primary mt-5 w-full" disabled={isLoading}>
-          {isLoading ? "Continuing..." : "Continue"}
-        </button>
+        <Button type="submit" className="mt-1 w-full" isLoading={isLoading} loadingText="Continuing...">
+          Continue
+        </Button>
 
-        <p className="mt-5 text-center text-sm text-[var(--muted)]">
+        <p className="text-center text-sm text-muted-foreground">
           New to LaunchMind?{" "}
-          <Link href="/register" className="font-medium text-[var(--accent)] transition hover:text-[#e0c35a]">
+          <Link href="/register" className="font-medium text-primary transition hover:text-primary/85">
             Create an account
           </Link>
         </p>
@@ -105,7 +165,3 @@ export function LoginForm() {
     </div>
   );
 }
-
-
-
-

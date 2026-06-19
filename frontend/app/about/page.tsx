@@ -1,9 +1,26 @@
-﻿import Link from "next/link";
-// Navbar is provided globally in layout
+﻿import type { Metadata } from "next";
+import Link from "next/link";
+import { JsonLd } from "../components/JsonLd";
+import { createMetadata } from "../../lib/seo";
+import { breadcrumbSchema } from "../../lib/structured-data";
+
+export const metadata: Metadata = createMetadata({
+  title: "About LaunchMind AI | Practical Startup Planning Tools",
+  description:
+    "Learn how LaunchMind AI helps founders, students, and freelancers turn early ideas into practical startup plans and documents.",
+  path: "/about",
+  keywords: ["about LaunchMind AI", "startup planning tools", "AI business planning"],
+});
 
 export default function AboutPage() {
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
@@ -15,6 +32,9 @@ export default function AboutPage() {
             </h1>
             <Link href="/register" className="btn-primary mt-8">
               Create your workspace
+            </Link>
+            <Link href="/ai-tools" className="btn-secondary mt-4 sm:ml-3">
+              Explore AI tools
             </Link>
           </div>
 
@@ -34,7 +54,6 @@ export default function AboutPage() {
     </main>
   );
 }
-
 
 
 

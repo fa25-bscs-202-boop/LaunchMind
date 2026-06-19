@@ -1,5 +1,16 @@
-﻿import Link from "next/link";
-// Navbar is provided globally in layout
+﻿import type { Metadata } from "next";
+import Link from "next/link";
+import { JsonLd } from "../components/JsonLd";
+import { createMetadata } from "../../lib/seo";
+import { breadcrumbSchema } from "../../lib/structured-data";
+
+export const metadata: Metadata = createMetadata({
+  title: "LaunchMind AI Features | Startup Reports, SWOT, MVP and Pitch Tools",
+  description:
+    "Explore LaunchMind AI features for idea analysis, feasibility reports, pitch decks, SWOT analysis, competitor research, and MVP planning.",
+  path: "/features",
+  keywords: ["LaunchMind AI features", "AI startup tools", "SWOT generator", "pitch deck generator"],
+});
 
 const detailedFeatures = [
   {
@@ -43,6 +54,12 @@ const detailedFeatures = [
 export default function FeaturesPage() {
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Features", path: "/features" },
+        ])}
+      />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page">
           <div className="max-w-3xl">
@@ -57,6 +74,9 @@ export default function FeaturesPage() {
             </p>
             <Link href="/register" className="btn-primary mt-8">
               Start free
+            </Link>
+            <Link href="/ai-tools" className="btn-secondary mt-4 sm:ml-3">
+              View AI tools
             </Link>
           </div>
 
@@ -83,7 +103,6 @@ export default function FeaturesPage() {
     </main>
   );
 }
-
 
 
 

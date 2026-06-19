@@ -1,8 +1,21 @@
-﻿"use client";
-
-import { useEffect } from "react";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
-// Navbar is provided globally in layout
+import { ScrollRevealActivator } from "./components/ScrollRevealActivator";
+import { createMetadata } from "../lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "LaunchMind AI | Startup Idea Generator and AI Planning Tools",
+  description:
+    "Use LaunchMind AI to generate startup ideas, business names, feasibility reports, pitch decks, SWOT analysis, MVP plans, resumes, and cover letters.",
+  path: "/",
+  keywords: [
+    "LaunchMind AI",
+    "startup idea generator",
+    "AI business tools",
+    "feasibility report generator",
+    "MVP planner",
+  ],
+});
 
 const features = [
   {
@@ -258,34 +271,10 @@ function PageFooter() {
   );
 }
 
-function useScrollReveal() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const elements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
-    if (!elements.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries, observerInstance) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("reveal");
-          observerInstance.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.18 }
-    );
-
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
-}
-
 export default function Home() {
-  useScrollReveal();
-
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--text)] bg-grid-background">
+      <ScrollRevealActivator />
       <HeroSection />
       <FeaturesSection />
       <CtaSection />
@@ -293,4 +282,3 @@ export default function Home() {
     </main>
   );
 }
-

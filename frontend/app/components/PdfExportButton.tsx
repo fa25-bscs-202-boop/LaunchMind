@@ -1,6 +1,10 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
+import { Download } from "lucide-react";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { downloadPdf } from "../../lib/download";
 
 type PdfExportButtonProps = {
@@ -26,22 +30,22 @@ export function PdfExportButton({ endpoint, filename }: PdfExportButtonProps) {
 
   return (
     <div className="w-full sm:w-fit">
-      <button
+      <Button
         type="button"
-        className="btn-secondary min-w-[144px] w-full px-5 py-2.5 sm:w-fit disabled:pointer-events-none disabled:opacity-60"
+        variant="secondary"
+        className="w-full min-w-36 sm:w-fit"
         onClick={handleExport}
-        disabled={isExporting}
+        isLoading={isExporting}
+        loadingText="Preparing PDF..."
       >
-        {isExporting ? "Preparing PDF..." : "Export PDF"}
-      </button>
+        <Download className="size-4" aria-hidden="true" />
+        Export PDF
+      </Button>
       {error ? (
-        <p className="mt-3 max-w-xs animate-card-in rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-6 text-red-100">
-          {error}
-        </p>
+        <Alert variant="destructive" className="mt-3 max-w-xs animate-card-in">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       ) : null}
     </div>
   );
 }
-
-
-

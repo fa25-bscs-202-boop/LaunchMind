@@ -1,6 +1,13 @@
 ﻿import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { defaultMetadata } from "../lib/seo";
+import {
+  organizationSchema,
+  softwareApplicationSchema,
+  websiteSchema,
+} from "../lib/structured-data";
+import { JsonLd } from "./components/JsonLd";
 import { SmartNavbar } from "./components/SmartNavbar";
 
 const inter = Inter({
@@ -9,10 +16,7 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "LaunchMind AI",
-  description: "Turn raw ideas into startup-ready plans.",
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -22,12 +26,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full">
+        <JsonLd
+          data={[websiteSchema(), organizationSchema(), softwareApplicationSchema()]}
+        />
         <SmartNavbar>{children}</SmartNavbar>
       </body>
     </html>
   );
 }
-
 
 
 

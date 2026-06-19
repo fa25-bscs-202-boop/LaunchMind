@@ -48,6 +48,14 @@ export function getToken() {
   return localStorage.getItem(TOKEN_KEY) || GUEST_TOKEN;
 }
 
+export function hasStoredUserToken() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return Boolean(localStorage.getItem(TOKEN_KEY));
+}
+
 export function logoutUser() {
   if (typeof window === "undefined") {
     return;

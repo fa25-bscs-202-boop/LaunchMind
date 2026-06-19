@@ -1,5 +1,16 @@
-﻿import Link from "next/link";
-// Navbar is provided globally in layout
+﻿import type { Metadata } from "next";
+import Link from "next/link";
+import { JsonLd } from "../components/JsonLd";
+import { createMetadata } from "../../lib/seo";
+import { breadcrumbSchema } from "../../lib/structured-data";
+
+export const metadata: Metadata = createMetadata({
+  title: "LaunchMind AI Pricing | Free Startup Planning and AI Tools",
+  description:
+    "Review LaunchMind AI pricing for startup planning, feasibility reports, pitch decks, AI resume tools, and student-friendly workflows.",
+  path: "/pricing",
+  keywords: ["LaunchMind AI pricing", "startup planning pricing", "AI tools pricing"],
+});
 
 const plans = [
   {
@@ -28,6 +39,12 @@ const plans = [
 export default function PricingPage() {
   return (
     <main className="animate-fade-up min-h-screen bg-[var(--background)] text-[var(--text)]">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Pricing", path: "/pricing" },
+        ])}
+      />
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page">
           <div className="mx-auto max-w-3xl text-center">
@@ -74,7 +91,6 @@ export default function PricingPage() {
     </main>
   );
 }
-
 
 
 
