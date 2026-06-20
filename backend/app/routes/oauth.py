@@ -75,9 +75,10 @@ def finish_oauth_login(profile: dict, db: Session):
 
     user = get_or_create_oauth_user(profile, db)
     access_token = create_access_token(data={"sub": user.email})
+    safe_token = quote(access_token, safe="")
 
     return RedirectResponse(
-        f"{settings.FRONTEND_URL}/oauth/success?token={access_token}"
+        f"{settings.FRONTEND_URL}/oauth/session?token={safe_token}&next=/dashboard"
     )
 
 

@@ -17,7 +17,12 @@ export default function OAuthSuccessPage() {
     }
 
     saveToken(token);
-    router.replace("/dashboard");
+    const nextPath = params.get("next");
+    router.replace(
+      nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")
+        ? nextPath
+        : "/dashboard",
+    );
   }, [router]);
 
   return (
@@ -34,6 +39,4 @@ export default function OAuthSuccessPage() {
     </main>
   );
 }
-
-
 
