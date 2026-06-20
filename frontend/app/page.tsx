@@ -60,7 +60,7 @@ const features = [
 
 function HeroSection() {
   return (
-    <section className="px-4 py-20 sm:py-28">
+    <section className="px-4 pb-20 pt-14 sm:py-28">
       <div className="container-page text-center">
         <div
           className="scroll-reveal mx-auto mb-7 w-fit rounded-full border border-[rgba(212,175,55,0.18)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--accent)]"
