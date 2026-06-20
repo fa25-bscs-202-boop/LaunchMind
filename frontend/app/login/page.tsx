@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthHeader } from "../components/AuthHeader";
@@ -27,7 +28,9 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6 pt-0 sm:p-7 sm:pt-0">
-              <LoginForm />
+              <Suspense fallback={null}>
+                <LoginForm />
+              </Suspense>
             </CardContent>
           </Card>
         </div>

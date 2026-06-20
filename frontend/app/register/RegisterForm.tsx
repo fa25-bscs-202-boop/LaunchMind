@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { API_BASE_URL } from "../../lib/api";
 import { registerUser } from "../../lib/auth";
 
 type FieldErrors = {
@@ -35,7 +34,7 @@ export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   function redirectToOAuth(provider: "google") {
-    window.location.href = `${API_BASE_URL}/auth/${provider}/login`;
+    window.location.href = `/auth/${provider}/login`;
   }
 
   function validateForm() {
