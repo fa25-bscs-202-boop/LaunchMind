@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // Navbar is provided globally in layout
 import { PdfExportButton } from "../../../components/PdfExportButton";
 import { apiRequest, isUnauthorizedError } from "../../../../lib/api";
-import { getToken, logoutUser } from "../../../../lib/auth";
+import { hasStoredUserToken, logoutUser } from "../../../../lib/auth";
 
 type SWOTAnalysis = {
   id: number;
@@ -96,7 +96,7 @@ export default function SWOTDetailPage() {
 
   useEffect(() => {
     async function loadSwot() {
-      if (!getToken()) {
+      if (!hasStoredUserToken()) {
         router.push("/login");
         return;
       }

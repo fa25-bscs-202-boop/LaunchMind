@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 // Navbar is provided globally in layout
 import { apiRequest, isUnauthorizedError } from "../../../../lib/api";
-import { getToken, logoutUser } from "../../../../lib/auth";
+import { hasStoredUserToken, logoutUser } from "../../../../lib/auth";
 
 type CompetitorAnalysis = {
   id: number;
@@ -118,7 +118,7 @@ export default function CompetitorDetailPage() {
 
   useEffect(() => {
     async function loadCompetitorAnalysis() {
-      if (!getToken()) {
+      if (!hasStoredUserToken()) {
         router.push("/login");
         return;
       }

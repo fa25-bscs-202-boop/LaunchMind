@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // Navbar is provided globally in layout
 import { PdfExportButton } from "../../../components/PdfExportButton";
 import { apiRequest, isUnauthorizedError } from "../../../../lib/api";
-import { getToken, logoutUser } from "../../../../lib/auth";
+import { hasStoredUserToken, logoutUser } from "../../../../lib/auth";
 
 type PitchDeck = {
   id: number;
@@ -73,7 +73,7 @@ export default function PitchDeckDetailPage() {
 
   useEffect(() => {
     async function loadPitchDeck() {
-      if (!getToken()) {
+      if (!hasStoredUserToken()) {
         router.push("/login");
         return;
       }

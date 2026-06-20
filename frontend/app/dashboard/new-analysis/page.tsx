@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 // Navbar is provided globally in layout
 import { apiRequest, ApiError, isUnauthorizedError } from "../../../lib/api";
-import { getToken, logoutUser } from "../../../lib/auth";
+import { hasStoredUserToken, logoutUser } from "../../../lib/auth";
 
 type AnalysisResult = {
   startup_names: string[];
@@ -188,7 +188,7 @@ export default function NewAnalysisPage() {
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!getToken()) {
+    if (!hasStoredUserToken()) {
       router.push("/login");
     }
   }, [router]);

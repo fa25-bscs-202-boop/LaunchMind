@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // Navbar is provided globally in layout
 import { PdfExportButton } from "../../../components/PdfExportButton";
 import { apiRequest, isUnauthorizedError } from "../../../../lib/api";
-import { getToken, logoutUser } from "../../../../lib/auth";
+import { hasStoredUserToken, logoutUser } from "../../../../lib/auth";
 
 type MVPPlan = {
   id: number;
@@ -120,7 +120,7 @@ export default function MVPDetailPage() {
 
   useEffect(() => {
     async function loadPlan() {
-      if (!getToken()) {
+      if (!hasStoredUserToken()) {
         router.push("/login");
         return;
       }

@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { isUnauthorizedError } from "../../lib/api";
-import { getCurrentUser, getToken, logoutUser, type User } from "../../lib/auth";
+import { getCurrentUser, hasStoredUserToken, logoutUser, type User } from "../../lib/auth";
 
 type DashboardCard = {
   title: string;
@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function loadUser() {
-      if (!getToken()) {
+      if (!hasStoredUserToken()) {
         router.push("/login");
         return;
       }
