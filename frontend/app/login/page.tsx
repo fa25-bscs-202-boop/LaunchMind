@@ -8,7 +8,7 @@ import { createMetadata } from "../../lib/seo";
 export const metadata: Metadata = createMetadata({
   title: "Log In to LaunchMind AI",
   description:
-    "Log in to LaunchMind AI to continue startup planning, reports, pitch decks, resumes, cover letters, and saved AI outputs.",
+    "Log in to your LaunchMind AI account.",
   path: "/login",
   noIndex: true,
 });
@@ -23,7 +23,7 @@ export default function LoginPage() {
             <CardHeader className="p-6 pb-3 text-center sm:p-7 sm:pb-3">
               <CardTitle className="text-3xl">Welcome back</CardTitle>
               <CardDescription>
-                Log in to access your LaunchMind workspace.
+                Log in to access your LaunchMind account.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6 pt-0 sm:p-7 sm:pt-0">

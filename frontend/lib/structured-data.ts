@@ -18,11 +18,6 @@ export function websiteSchema() {
     name: siteConfig.name,
     url: siteConfig.url,
     description: siteConfig.description,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${absoluteUrl("/ai-tools")}?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -38,17 +33,6 @@ export function organizationSchema() {
       "https://www.linkedin.com/in/m-bilal-shah-gillani-3a7980220/",
       "https://www.linkedin.com/in/malik-abdur-rehman-9b4228358/",
     ],
-  };
-}
-
-export function softwareApplicationSchema() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "@id": absoluteUrl("/#software"),
-    name: siteConfig.name,
-    url: siteConfig.url,
-    description: siteConfig.description,
   };
 }
 

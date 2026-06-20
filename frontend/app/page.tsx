@@ -1,114 +1,80 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { HomeStickyNav } from "./components/HomeStickyNav";
-import { ScrollRevealActivator } from "./components/ScrollRevealActivator";
+
 import { createMetadata } from "../lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "LaunchMind AI | Startup Idea Generator and Planning Workspace",
+  title: "LaunchMind AI | Turn Raw Ideas Into Startup-Ready Plans",
   description:
-    "Generate startup ideas, feasibility reports, pitch decks, SWOT analysis, competitor research, and MVP plans in one LaunchMind AI workspace.",
+    "LaunchMind AI helps you analyze ideas, generate feasibility reports, prepare pitch decks, compare competitors, build SWOT analysis, and plan your MVP from one workspace.",
   path: "/",
-  keywords: [
-    "LaunchMind AI",
-    "startup idea generator",
-    "feasibility reports",
-    "pitch deck generator",
-    "MVP planning",
-  ],
+  keywords: ["LaunchMind AI", "startup planning", "feasibility reports", "pitch decks", "MVP planning"],
 });
 
-const features = [
+const sections = [
   {
-    title: "Idea Analyzer",
-    label: "Analysis",
-    description:
-      "Turn rough notes into a structured review of the idea, audience, risks, and early feasibility.",
+    title: "FAQ",
+    label: "Answers",
+    description: "Clear responses to common questions about the product, access, and support.",
+    href: "/faq",
   },
   {
-    title: "Feasibility Reports",
-    label: "Report",
-    description:
-      "Generate formal business reports with practical market, technical, financial, and legal sections.",
+    title: "Pricing",
+    label: "Plans",
+    description: "Simple plan details for individuals, teams, and partner programs.",
+    href: "/pricing",
   },
   {
-    title: "Pitch Deck Generator",
-    label: "Strategy",
-    description:
-      "Prepare concise pitch content that explains the problem, solution, market, model, and roadmap.",
+    title: "About",
+    label: "Company",
+    description: "A focused overview of what LaunchMind is building and how the site is positioned.",
+    href: "/about",
   },
   {
-    title: "SWOT Analysis",
-    label: "Analysis",
-    description:
-      "Map strengths, weaknesses, opportunities, and threats in a clear decision-making format.",
+    title: "Blog",
+    label: "Updates",
+    description: "Product notes, public updates, and practical writing from the LaunchMind team.",
+    href: "/blog",
   },
   {
-    title: "Competitor Research",
-    label: "Strategy",
-    description:
-      "Compare realistic alternatives, identify gaps, and clarify how the idea could be positioned.",
-  },
-  {
-    title: "MVP Planner",
-    label: "Planning",
-    description:
-      "Define the first usable version, core features, excluded features, team needs, and rollout steps.",
+    title: "Contact",
+    label: "Support",
+    description: "Reach the team for product questions, partnerships, and feedback.",
+    href: "/contact",
   },
 ];
 
 function HeroSection() {
   return (
-    <section className="px-4 pb-20 pt-14 sm:py-28">
+    <section className="px-4 py-20 sm:py-28">
       <div className="container-page text-center">
-        <div
-          className="scroll-reveal mx-auto mb-7 w-fit rounded-full border border-[rgba(212,175,55,0.18)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--accent)]"
-          style={{ transitionDelay: "0ms" }}
-        >
+        <div className="mx-auto mb-7 w-fit rounded-full border border-[rgba(212,175,55,0.18)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--accent)]">
           Built for founders, students, and early teams
         </div>
 
-        <h1
-          className="scroll-reveal mx-auto max-w-5xl text-5xl font-bold leading-[1.02] tracking-[-0.055em] text-[var(--text)] sm:text-6xl lg:text-[5.25rem]"
-          style={{ transitionDelay: "80ms" }}
-        >
+        <h1 className="mx-auto max-w-5xl text-5xl font-bold leading-[1.02] tracking-[-0.055em] text-[var(--text)] sm:text-6xl lg:text-[5.25rem]">
           Turn raw ideas into startup-ready plans.
         </h1>
 
-        <p
-          className="scroll-reveal mx-auto mt-7 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8"
-          style={{ transitionDelay: "120ms" }}
-        >
-          LaunchMind AI helps you analyze ideas, generate feasibility reports,
-          prepare pitch decks, compare competitors, build SWOT analysis, and plan
-          your MVP from one workspace.
+        <p className="mx-auto mt-7 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
+          LaunchMind AI helps you analyze ideas, generate feasibility reports, prepare pitch decks, compare competitors,
+          build SWOT analysis, and plan your MVP from one workspace.
         </p>
 
-        <div
-          className="scroll-reveal mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-          style={{ transitionDelay: "160ms" }}
-        >
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link href="/register" className="btn-primary w-full sm:w-auto">
             Get Started
           </Link>
-          <Link href="#features" className="btn-secondary w-full sm:w-auto">
+          <Link href="/pricing" className="btn-secondary w-full sm:w-auto">
             Explore Features
           </Link>
         </div>
 
-        <div
-          className="scroll-reveal mx-auto mt-20 max-w-[1100px] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-left shadow-2xl shadow-black/35"
-          style={{ transitionDelay: "220ms" }}
-        >
+        <div className="mx-auto mt-20 max-w-[1100px] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-left shadow-2xl shadow-black/35">
           <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
             <div>
-              <p className="text-sm font-semibold text-[var(--text)]">
-                Startup Workspace
-              </p>
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                Idea validation draft
-              </p>
+              <p className="text-sm font-semibold text-[var(--text)]">Startup Workspace</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">Idea validation draft</p>
             </div>
             <span className="rounded-full border border-[rgba(212,175,55,0.18)] px-3 py-1 text-xs text-[var(--accent)]">
               Planning mode
@@ -117,54 +83,48 @@ function HeroSection() {
 
           <div className="grid gap-0 md:grid-cols-2">
             <div className="border-b border-[var(--border)] p-6 sm:p-8 md:border-b-0 md:border-r">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                Raw Idea
-              </p>
-              <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[var(--text)]">
-                Campus budgeting assistant
-              </h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">Raw Idea</p>
+              <h2 className="mt-4 text-2xl font-bold tracking-[-0.03em] text-[var(--text)]">Campus budgeting assistant</h2>
               <p className="mt-4 max-w-md text-sm leading-6 text-[var(--muted)]">
-                A simple tool that helps university students track spending,
-                plan monthly budgets, and understand where their money goes.
+                A simple tool that helps university students track spending, plan monthly budgets, and understand where
+                their money goes.
               </p>
 
               <div className="mt-7 space-y-3">
-                <div className="scroll-reveal hover-lift rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
                   <p className="text-xs font-medium text-[var(--muted)]">Audience</p>
-                  <p className="mt-1 text-sm text-[var(--text)]">
-                    Students managing limited monthly income
-                  </p>
+                  <p className="mt-1 text-sm text-[var(--text)]">Students managing limited monthly income</p>
                 </div>
-                <div className="scroll-reveal hover-lift rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
                   <p className="text-xs font-medium text-[var(--muted)]">Concern</p>
-                  <p className="mt-1 text-sm text-[var(--text)]">
-                    Needs validation through interviews and a small pilot
-                  </p>
+                  <p className="mt-1 text-sm text-[var(--text)]">Needs validation through interviews and a small pilot</p>
                 </div>
               </div>
             </div>
 
             <div className="p-6 sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                Generated Strategy
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">Generated Strategy</p>
               <div className="mt-4 space-y-4">
                 {[
-                  ["Feasibility Report", "Demand may exist, but adoption should be tested with a small group before building advanced features."],
-                  ["MVP Plan", "Start with expense entry, budget goals, and weekly spending summaries. Leave bank integrations for later."],
-                  ["Pitch Direction", "Position the product as a practical finance habit tool for students, not a broad personal finance platform."],
-                ].map(([title, copy], index) => (
+                  [
+                    "Feasibility Report",
+                    "Demand may exist, but adoption should be tested with a small group before building advanced features.",
+                  ],
+                  [
+                    "MVP Plan",
+                    "Start with expense entry, budget goals, and weekly spending summaries. Leave bank integrations for later.",
+                  ],
+                  [
+                    "Pitch Direction",
+                    "Position the product as a practical finance habit tool for students, not a broad personal finance platform.",
+                  ],
+                ].map(([title, description]) => (
                   <div
                     key={title}
-                    className="scroll-reveal hover-lift rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-5"
-                    style={{ animationDelay: `${260 + index * 40}ms` }}
+                    className="block rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-5 transition hover:border-[rgba(212,175,55,0.35)]"
                   >
-                    <p className="text-sm font-semibold text-[var(--accent)]">
-                      {title}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                      {copy}
-                    </p>
+                    <p className="text-sm font-semibold text-[var(--accent)]">{title}</p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{description}</p>
                   </div>
                 ))}
               </div>
@@ -176,40 +136,34 @@ function HeroSection() {
   );
 }
 
-function FeaturesSection() {
+function SectionsGrid() {
   return (
-    <section id="features" className="px-4 pb-28 pt-6 sm:pb-32">
+    <section className="px-4 pb-28 pt-6 sm:pb-32">
       <div className="container-page">
-        <div className="scroll-reveal max-w-2xl" style={{ transitionDelay: "80ms" }}>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-            Product features
-          </p>
+        <div className="max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">Core Pages</p>
           <h2 className="mt-4 text-3xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-4xl">
-            Tools for early startup planning
+            Everything important is now easier to find.
           </h2>
           <p className="mt-4 text-base leading-7 text-[var(--muted)]">
-            Structured outputs for founders who need clear decisions, not noisy
-            documents.
+            A tighter structure gives the website a cleaner first impression and keeps people closer to the information
+            they came for.
           </p>
         </div>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
-            <article
-              key={feature.title}
-              className="scroll-reveal hover-lift rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-7 shadow-xl shadow-black/20"
-              style={{ animationDelay: `${120 + index * 40}ms` }}
+          {sections.map((section) => (
+            <Link
+              key={section.href}
+              href={section.href}
+              className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-7 shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-[rgba(212,175,55,0.22)]"
             >
               <span className="rounded-full border border-[rgba(212,175,55,0.16)] px-3 py-1 text-xs font-medium text-[var(--accent)]">
-                {feature.label}
+                {section.label}
               </span>
-              <h3 className="mt-6 text-lg font-bold tracking-[-0.02em] text-[var(--text)]">
-                {feature.title}
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                {feature.description}
-              </p>
-            </article>
+              <h3 className="mt-6 text-lg font-bold tracking-[-0.02em] text-[var(--text)]">{section.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{section.description}</p>
+            </Link>
           ))}
         </div>
       </div>
@@ -220,17 +174,21 @@ function FeaturesSection() {
 function CtaSection() {
   return (
     <section className="px-4 pb-28">
-      <div className="scroll-reveal hover-lift container-page rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-8 text-center shadow-xl shadow-black/20 sm:p-10">
+      <div className="container-page rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-8 text-center shadow-xl shadow-black/20 sm:p-10">
         <h2 className="text-3xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-4xl">
-          Ready to build your startup idea?
+          Want details before you decide?
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-base">
-          Start with one idea and turn it into structured planning documents from a single workspace.
+          Start with pricing or FAQ, then contact the team if you need anything more specific.
         </p>
-        <Link href="/register" className="btn-primary mt-8">
-          Start Free
-          <ArrowRight className="ml-2 inline-block h-4 w-4" aria-hidden="true" />
-        </Link>
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Link href="/pricing" className="btn-primary w-full sm:w-auto">
+            See Pricing
+          </Link>
+          <Link href="/contact" className="btn-secondary w-full sm:w-auto">
+            Contact Us
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -270,7 +228,7 @@ function PageFooter() {
           </a>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+        <div className="flex flex-wrap items-center gap-4 text-sm">
           <Link href="/privacy-policy" className="nav-link">
             Privacy Policy
           </Link>
@@ -283,13 +241,11 @@ function PageFooter() {
   );
 }
 
-export default function Home() {
+export default function HomePage() {
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--text)] bg-grid-background">
-      <ScrollRevealActivator />
-      <HomeStickyNav />
       <HeroSection />
-      <FeaturesSection />
+      <SectionsGrid />
       <CtaSection />
       <PageFooter />
     </main>

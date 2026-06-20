@@ -1,32 +1,19 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { Navbar } from "./Navbar";
+import { SiteHeader } from "./SiteHeader";
 
 export function SmartNavbar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isNoSidebarPage =
-    ["/", "/login", "/register", "/verify-email", "/forgot-password", "/privacy-policy", "/terms-of-service"].includes(
+  const isHeaderlessPage =
+    ["/login", "/register", "/verify-email", "/forgot-password"].includes(
       pathname,
     ) || pathname.startsWith("/oauth");
 
-  useEffect(() => {
-    if (isNoSidebarPage) {
-      document.body.classList.add("no-sidebar-page");
-    } else {
-      document.body.classList.remove("no-sidebar-page");
-    }
-
-    return () => {
-      document.body.classList.remove("no-sidebar-page");
-    };
-  }, [isNoSidebarPage]);
-
   return (
-    <div className="flex min-h-screen">
-      {!isNoSidebarPage && <Navbar />}
-      <main className={`flex-1 ${isNoSidebarPage ? "" : "lg:pl-[280px]"}`}>{children}</main>
-    </div>
+    <>
+      {!isHeaderlessPage ? <SiteHeader /> : null}
+      <main>{children}</main>
+    </>
   );
 }

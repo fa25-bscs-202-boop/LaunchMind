@@ -8,7 +8,7 @@ import { createMetadata } from "../../lib/seo";
 export const metadata: Metadata = createMetadata({
   title: "Create a LaunchMind AI Account",
   description:
-    "Create a LaunchMind AI workspace for startup ideas, business names, feasibility reports, MVP plans, resumes, and cover letters.",
+    "Create a LaunchMind AI account to stay connected with the product.",
   path: "/register",
   noIndex: true,
 });
@@ -23,7 +23,7 @@ export default function RegisterPage() {
             <CardHeader className="p-6 pb-3 text-center sm:p-7 sm:pb-3">
               <CardTitle className="text-3xl">Create your workspace</CardTitle>
               <CardDescription>
-                Start turning ideas into organized startup plans.
+                Create your account to get started with LaunchMind.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6 pt-0 sm:p-7 sm:pt-0">

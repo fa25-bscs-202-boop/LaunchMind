@@ -1,15 +1,15 @@
-﻿import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from "next";
+
 import { JsonLd } from "../components/JsonLd";
 import { createMetadata } from "../../lib/seo";
 import { breadcrumbSchema } from "../../lib/structured-data";
 
 export const metadata: Metadata = createMetadata({
-  title: "About LaunchMind AI | Practical Startup Planning Tools",
+  title: "About LaunchMind AI | Company Overview and Direction",
   description:
-    "Learn how LaunchMind AI helps founders, students, and freelancers turn early ideas into practical startup plans and documents.",
+    "Learn what LaunchMind AI is, what the team is focused on, and how the product is being presented right now.",
   path: "/about",
-  keywords: ["about LaunchMind AI", "startup planning tools", "AI business planning"],
+  keywords: ["about LaunchMind AI", "LaunchMind company", "product direction"],
 });
 
 export default function AboutPage() {
@@ -21,32 +21,26 @@ export default function AboutPage() {
           { name: "About", path: "/about" },
         ])}
       />
+
       <section className="px-4 py-20 sm:py-28">
         <div className="container-page grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-              About
-            </p>
-            <h1 className="mt-4 text-4xl font-bold tracking-[-0.045em] sm:text-5xl">
-              Built for clearer startup thinking.
-            </h1>
-            <Link href="/register" className="btn-primary mt-8">
-              Create your workspace
-            </Link>
-            <Link href="/ai-tools" className="btn-secondary mt-4 sm:ml-3">
-              Explore AI tools
-            </Link>
+            <p className="text-sm font-semibold uppercase text-[var(--accent)]">About</p>
+            <h1 className="mt-4 text-4xl font-bold sm:text-5xl">A focused public-facing LaunchMind experience.</h1>
           </div>
 
-          <div className="animate-fade-up hover-lift rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-7 shadow-xl shadow-black/20 sm:p-9">
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-soft)] p-7 shadow-xl shadow-black/20 sm:p-9">
             <p className="text-lg leading-8 text-[var(--text)]">
-              LaunchMind AI helps students, founders, and freelancers turn raw ideas into structured startup plans.
+              LaunchMind AI is currently centered on a clearer website experience built around essential company and
+              product information.
             </p>
             <p className="mt-6 text-base leading-7 text-[var(--muted)]">
-              The product is designed for early planning work: feasibility reports, pitch content, competitor research, SWOT analysis, and MVP planning. The goal is to make idea validation more practical, organized, and presentation-ready.
+              The public surface now prioritizes the pages visitors use most: FAQ, pricing, about, blog, and contact.
+              This keeps the site easier to navigate and easier to maintain.
             </p>
             <p className="mt-6 text-base leading-7 text-[var(--muted)]">
-              Instead of pushing exaggerated claims, LaunchMind AI focuses on useful questions, realistic next steps, and documents that can support class projects, early founder decisions, and freelance product planning.
+              Account access remains available, but the website itself is intentionally trimmed back to remove unused AI
+              tool routes and unnecessary navigation complexity.
             </p>
           </div>
         </div>
@@ -54,8 +48,3 @@ export default function AboutPage() {
     </main>
   );
 }
-
-
-
-
-
