@@ -1,31 +1,21 @@
 "use client";
 
 import { ToolGeneratorPage } from "../components/ToolGeneratorPage";
+import { ListReportSection, TextReportSection } from "../components/ReportSections";
 import { generateCompetitorAnalysis, type CompetitorAnalysis } from "../../lib/workspace";
 
 function CompetitorResult({ result }: { result: CompetitorAnalysis }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border bg-background/30 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Direct competitors</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {result.direct_competitors.map((item) => (
-            <span
-              key={item}
-              className="inline-flex min-h-9 items-center rounded-full border border-primary/20 bg-primary/8 px-3 text-xs font-medium text-primary"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="rounded-lg border border-border bg-background/30 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Market gap</p>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{result.market_gap}</p>
-      </div>
-      <div className="rounded-lg border border-border bg-background/30 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Differentiation</p>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{result.differentiation_strategy}</p>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ListReportSection label="Direct competitors" items={result.direct_competitors} />
+        <ListReportSection label="Indirect competitors" items={result.indirect_competitors} />
+        <TextReportSection label="Competitor strengths"><p>{result.competitor_strengths}</p></TextReportSection>
+        <TextReportSection label="Competitor weaknesses"><p>{result.competitor_weaknesses}</p></TextReportSection>
+        <TextReportSection label="Market gap"><p>{result.market_gap}</p></TextReportSection>
+        <TextReportSection label="Differentiation"><p>{result.differentiation_strategy}</p></TextReportSection>
+        <TextReportSection label="Pricing comparison"><p>{result.pricing_comparison}</p></TextReportSection>
+        <TextReportSection label="Recommendations"><p>{result.recommendations}</p></TextReportSection>
       </div>
     </div>
   );
@@ -41,6 +31,10 @@ export function CompetitorClient() {
       emptyLabel="Choose one of your saved analyses to prepare a competitor review."
       generate={generateCompetitorAnalysis}
       renderResult={(result) => <CompetitorResult result={result} />}
+      getPdfExport={(result) => ({
+        endpoint: `/exports/competitor/${result.id}/pdf`,
+        filename: `launchmind-competitor-${result.id}.pdf`,
+      })}
     />
   );
 }

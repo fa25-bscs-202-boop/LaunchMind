@@ -408,6 +408,20 @@ def swot_to_pdf(swot) -> bytes:
     return build_pdf("SWOT Analysis", f"SWOT Analysis #{swot.id}", sections)
 
 
+def competitor_to_pdf(competitor) -> bytes:
+    sections = [
+        {"title": "Direct Competitors", "type": "list", "items": parse_list(competitor.direct_competitors)},
+        {"title": "Indirect Competitors", "type": "list", "items": parse_list(competitor.indirect_competitors)},
+        {"title": "Competitor Strengths", "content": competitor.competitor_strengths},
+        {"title": "Competitor Weaknesses", "content": competitor.competitor_weaknesses},
+        {"title": "Market Gap", "content": competitor.market_gap},
+        {"title": "Differentiation Strategy", "content": competitor.differentiation_strategy},
+        {"title": "Pricing Comparison", "content": competitor.pricing_comparison},
+        {"title": "Recommendations", "content": competitor.recommendations},
+    ]
+    return build_pdf("Competitor Analysis", f"Competitor Analysis #{competitor.id}", sections)
+
+
 def mvp_to_pdf(mvp) -> bytes:
     sections = [
         {"title": "MVP Summary", "content": mvp.mvp_summary},
@@ -422,4 +436,3 @@ def mvp_to_pdf(mvp) -> bytes:
         {"title": "Success Metrics", "type": "list", "items": parse_list(mvp.success_metrics)},
     ]
     return build_pdf("MVP Plan", f"MVP Plan #{mvp.id}", sections)
-

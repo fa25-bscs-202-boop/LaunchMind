@@ -37,6 +37,10 @@ export function SwotClient() {
       emptyLabel="Choose one of your saved analyses to generate a SWOT view."
       generate={generateSwotAnalysis}
       renderResult={(result) => <SwotResult result={result} />}
+      getPdfExport={(result) => ({
+        endpoint: `/exports/swot/${result.id}/pdf`,
+        filename: `launchmind-swot-${result.id}.pdf`,
+      })}
     />
   );
 }

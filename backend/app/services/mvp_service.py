@@ -227,6 +227,70 @@ def normalize_mvp_plan(data: dict) -> dict:
     return normalized
 
 
+def build_fallback_mvp_plan(analysis) -> dict:
+    roadmap = parse_list(analysis.launch_roadmap)
+
+    return normalize_mvp_plan(
+        {
+            "mvp_summary": (
+                "Build the smallest usable version that tests the main customer problem and confirms whether users understand the offer."
+            ),
+            "core_features": [
+                "Simple landing or onboarding flow",
+                "Core feature that delivers the main promised value",
+                "Basic user feedback or contact collection",
+                "Admin view or manual process for early operations",
+            ],
+            "excluded_features": [
+                "Advanced automation",
+                "Large-scale analytics",
+                "Complex integrations",
+                "Multiple pricing tiers before validation",
+            ],
+            "recommended_tech_stack": [
+                "Next.js or React frontend",
+                "FastAPI backend",
+                "JWT authentication",
+                "SQLite for local testing or PostgreSQL for deployment",
+                "OpenRouter integration where AI support is needed",
+            ],
+            "development_phases": roadmap[:4]
+            or [
+                "Validate user problem through interviews",
+                "Create a simple prototype or landing page",
+                "Build the smallest usable product",
+                "Run a limited pilot and collect feedback",
+            ],
+            "timeline": (
+                "A first MVP can be planned in phases. Exact timing depends on team size, feature scope, and validation results."
+            ),
+            "required_team": [
+                "Product or founder lead",
+                "Frontend developer",
+                "Backend developer",
+                "Early user support or operations role",
+            ],
+            "budget_considerations": (
+                "Initial development budget depends on team size, hosting costs, API usage, design needs, and support workload."
+            ),
+            "launch_checklist": [
+                "Confirm target user problem",
+                "Prepare landing page or prototype",
+                "Set up basic analytics and feedback collection",
+                "Test with a small group of users",
+                "Review pricing and operational issues",
+            ],
+            "success_metrics": [
+                "User signups or pilot participation",
+                "Repeat usage or continued interest",
+                "Feedback quality",
+                "Willingness to pay",
+                "Ability to deliver the service reliably",
+            ],
+        }
+    )
+
+
 def build_mvp_prompt(analysis) -> str:
     analysis_context = {
         "idea": analysis.idea,
@@ -269,7 +333,11 @@ Node.js or Express for the backend.
 
 
 def generate_mvp_plan(analysis) -> dict:
-    client = get_openrouter_client()
+    try:
+        client = get_openrouter_client()
+    except ValueError as error:
+        print(f"MVP fallback used: {error}")
+        return build_fallback_mvp_plan(analysis)
 
     try:
         completion = client.chat.completions.create(
@@ -280,13 +348,19 @@ def generate_mvp_plan(analysis) -> dict:
             ],
         )
     except Exception as error:
-        raise ValueError(f"OpenRouter MVP request failed: {error}") from error
+        print(f"OpenRouter MVP request failed: {error}")
+        return build_fallback_mvp_plan(analysis)
 
     response_text = completion.choices[0].message.content
 
     if not response_text:
-        raise ValueError("AI MVP response invalid: empty response")
+        print("AI MVP response invalid: empty response")
+        return build_fallback_mvp_plan(analysis)
 
-    mvp_data = extract_json_from_text(response_text)
+    try:
+        mvp_data = extract_json_from_text(response_text)
+    except ValueError as error:
+        print(error)
+        return build_fallback_mvp_plan(analysis)
 
     return normalize_mvp_plan(mvp_data)

@@ -10,7 +10,7 @@ from app.models.project import Project
 from app.models.user import User
 from app.schemas.analysis import AnalysisResponse
 from app.schemas.idea import IdeaAnalyzeRequest
-from app.services.ai_service import analyze_startup_idea
+from app.services.ai_service import analyze_startup_idea, build_fallback_analysis
 from app.utils.dependencies import get_current_user
 
 
@@ -43,22 +43,12 @@ def analyze_idea(
             target_audience=request.target_audience,
         )
     except ValueError as error:
-        detail = str(error)
-        if (
-            "OPENROUTER_API_KEY" in detail
-            or "OpenAI SDK is not installed" in detail
-            or "OpenRouter request failed" in detail
-            or "AI response invalid" in detail
-        ):
-            raise HTTPException(
-                status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=detail,
-            ) from error
-
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=detail,
-        ) from error
+        print(f"AI analysis fallback used: {error}")
+        analysis = build_fallback_analysis(
+            idea=request.idea,
+            industry=request.industry,
+            target_audience=request.target_audience,
+        )
 
     try:
         saved_analysis = Analysis(

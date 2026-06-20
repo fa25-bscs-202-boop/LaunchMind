@@ -235,6 +235,45 @@ def normalize_pitch_deck(data: dict) -> dict:
     return normalized
 
 
+def build_fallback_pitch_deck(analysis) -> dict:
+    startup_names = parse_list(analysis.startup_names)
+    startup_name = startup_names[0] if startup_names else "Startup Concept"
+    revenue_items = parse_list(analysis.revenue_model)
+    roadmap_items = parse_list(analysis.launch_roadmap)
+
+    return normalize_pitch_deck(
+        {
+            "startup_name": startup_name,
+            "elevator_pitch": analysis.one_line_pitch,
+            "problem": analysis.problem_statement,
+            "solution": analysis.proposed_solution,
+            "target_market": analysis.target_market,
+            "business_model": (
+                "The business model should start with a simple paid offer, package, or subscription that can be tested with early users."
+            ),
+            "competitor_landscape": (
+                "Customers may compare this idea with existing online tools, manual workflows, local providers, or informal alternatives. "
+                "Specific competitor claims require further validation."
+            ),
+            "go_to_market_strategy": (
+                "Start with a narrow audience, test messaging through direct outreach or a landing page, and use early feedback before wider promotion."
+            ),
+            "revenue_model": " ".join(revenue_items) or "Revenue should be tested through a simple pricing model before expanding plans.",
+            "mvp_summary": (
+                "The MVP should focus on the smallest usable version that demonstrates the core solution and collects user feedback."
+            ),
+            "traction_strategy": (
+                "Early traction should be measured through interviews, pilot users, signups, repeat usage, and willingness to pay."
+            ),
+            "funding_needs": (
+                "Initial funding should be estimated after confirming development, staffing, technology, and operational costs."
+            ),
+            "future_roadmap": " ".join(roadmap_items) or "Expand features only after the first pilot validates customer demand.",
+            "closing_statement": analysis.final_recommendation,
+        }
+    )
+
+
 def build_pitch_prompt(analysis) -> str:
     analysis_context = {
         "idea": analysis.idea,
@@ -267,7 +306,11 @@ cautious wording where evidence is missing.
 
 
 def generate_pitch_deck(analysis) -> dict:
-    client = get_openrouter_client()
+    try:
+        client = get_openrouter_client()
+    except ValueError as error:
+        print(f"Pitch fallback used: {error}")
+        return build_fallback_pitch_deck(analysis)
 
     try:
         completion = client.chat.completions.create(
@@ -278,15 +321,20 @@ def generate_pitch_deck(analysis) -> dict:
             ],
         )
     except Exception as error:
-        raise ValueError(f"OpenRouter pitch request failed: {error}") from error
+        print(f"OpenRouter pitch request failed: {error}")
+        return build_fallback_pitch_deck(analysis)
 
     response_text = completion.choices[0].message.content
 
     if not response_text:
-        raise ValueError("AI pitch response invalid: empty response")
+        print("AI pitch response invalid: empty response")
+        return build_fallback_pitch_deck(analysis)
 
-    pitch_data = extract_json_from_text(response_text)
+    try:
+        pitch_data = extract_json_from_text(response_text)
+    except ValueError as error:
+        print(error)
+        return build_fallback_pitch_deck(analysis)
 
     return normalize_pitch_deck(pitch_data)
-
 

@@ -1,27 +1,24 @@
 "use client";
 
 import { ToolGeneratorPage } from "../components/ToolGeneratorPage";
+import { ListReportSection, TextReportSection } from "../components/ReportSections";
 import { generateMvpPlan, type MvpPlan } from "../../lib/workspace";
 
 function MvpResult({ result }: { result: MvpPlan }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border bg-background/30 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">MVP summary</p>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{result.mvp_summary}</p>
+      <TextReportSection label="MVP summary"><p>{result.mvp_summary}</p></TextReportSection>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ListReportSection label="Core features" items={result.core_features} />
+        <ListReportSection label="Excluded features" items={result.excluded_features} />
+        <ListReportSection label="Recommended tech stack" items={result.recommended_tech_stack} />
+        <ListReportSection label="Development phases" items={result.development_phases} />
+        <TextReportSection label="Timeline"><p>{result.timeline}</p></TextReportSection>
+        <ListReportSection label="Required team" items={result.required_team} />
+        <TextReportSection label="Budget considerations"><p>{result.budget_considerations}</p></TextReportSection>
+        <ListReportSection label="Launch checklist" items={result.launch_checklist} />
       </div>
-      <div className="rounded-lg border border-border bg-background/30 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Core features</p>
-        <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
-          {result.core_features.map((item) => (
-            <li key={item}>• {item}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="rounded-lg border border-border bg-background/30 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Timeline</p>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{result.timeline}</p>
-      </div>
+      <ListReportSection label="Success metrics" items={result.success_metrics} />
     </div>
   );
 }
@@ -36,6 +33,10 @@ export function MvpPlannerClient() {
       emptyLabel="Choose one of your saved analyses to build an MVP plan."
       generate={generateMvpPlan}
       renderResult={(result) => <MvpResult result={result} />}
+      getPdfExport={(result) => ({
+        endpoint: `/exports/mvp/${result.id}/pdf`,
+        filename: `launchmind-mvp-${result.id}.pdf`,
+      })}
     />
   );
 }

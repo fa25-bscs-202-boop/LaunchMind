@@ -200,6 +200,59 @@ def normalize_report(data: dict) -> dict:
     return normalized
 
 
+def build_fallback_report_from_analysis(analysis) -> dict:
+    startup_names = parse_list(analysis.startup_names)
+    primary_name = startup_names[0] if startup_names else "Startup Concept"
+    industry = clean_report_text(analysis.industry or "the selected industry")
+    audience = clean_report_text(analysis.target_audience or "the target audience")
+
+    return normalize_report(
+        {
+            "title": f"Feasibility Report for {primary_name}",
+            "executive_summary": (
+                f"This report reviews the feasibility of {analysis.idea}. The concept is aimed at {audience} "
+                f"within {industry}. The idea should be treated as an early-stage opportunity that requires "
+                "customer validation before major investment."
+            ),
+            "introduction": (
+                "The purpose of this report is to organize the available analysis into a practical feasibility view. "
+                "It focuses on market, technical, operational, financial, legal, and risk factors."
+            ),
+            "problem_statement": analysis.problem_statement,
+            "objectives": (
+                "The main objective is to test whether the idea solves a clear customer problem, can be delivered "
+                "with reasonable resources, and has a realistic path toward early adoption."
+            ),
+            "scope": (
+                "This report covers an initial feasibility review only. Exact demand, costs, pricing, and adoption "
+                "metrics require interviews, pilot testing, and further research."
+            ),
+            "methodology": (
+                "The report uses the saved idea analysis as source context and converts it into a structured review. "
+                "The next step should be validation with real target users."
+            ),
+            "market_feasibility": analysis.market_feasibility,
+            "technical_feasibility": analysis.technical_feasibility,
+            "operational_feasibility": analysis.operational_feasibility,
+            "financial_feasibility": analysis.financial_feasibility,
+            "legal_considerations": analysis.legal_feasibility,
+            "risk_assessment": " ".join(parse_list(analysis.risk_assessment)) or "Risks should be validated during a pilot.",
+            "findings": (
+                "The concept appears suitable for small-scale validation. The strongest next step is to test interest "
+                "with a narrow audience before expanding features or spending on larger rollout."
+            ),
+            "recommendations": (
+                "Run customer interviews, prepare a simple prototype or landing page, test pricing assumptions, "
+                "and launch a limited pilot before building a full product."
+            ),
+            "conclusion": (
+                "The idea can move forward if early validation confirms that the target audience understands the offer "
+                "and is willing to try or pay for it."
+            ),
+        }
+    )
+
+
 def build_report_prompt(analysis) -> str:
     analysis_context = {
         "idea": analysis.idea,
@@ -237,7 +290,11 @@ or further market research.
 
 
 def generate_report_from_analysis(analysis) -> dict:
-    client = get_openrouter_client()
+    try:
+        client = get_openrouter_client()
+    except ReportAIConfigurationError as error:
+        print(f"Report fallback used: {error}")
+        return build_fallback_report_from_analysis(analysis)
 
     try:
         completion = client.chat.completions.create(
@@ -249,21 +306,18 @@ def generate_report_from_analysis(analysis) -> dict:
         )
     except Exception as error:
         print(f"OpenRouter report request failed: {error}")
-        raise ReportGenerationUnavailableError(
-            "OpenRouter report request failed"
-        ) from error
+        return build_fallback_report_from_analysis(analysis)
 
     response_text = completion.choices[0].message.content
 
     if not response_text:
         print("AI report response invalid: empty response")
-        raise ReportInvalidResponseError("AI report response invalid: empty response")
+        return build_fallback_report_from_analysis(analysis)
 
     try:
         report_data = extract_json_from_text(response_text)
     except ReportInvalidResponseError as error:
         print(error)
-        raise
+        return build_fallback_report_from_analysis(analysis)
 
     return normalize_report(report_data)
-

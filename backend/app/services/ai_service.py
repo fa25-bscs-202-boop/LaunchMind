@@ -168,6 +168,83 @@ def normalize_analysis(data: dict) -> dict:
     return normalized
 
 
+def build_fallback_analysis(
+    idea: str,
+    industry: str | None,
+    target_audience: str | None,
+) -> dict:
+    normalized_idea = clean_ai_text(idea)
+    normalized_industry = clean_ai_text(industry or "the selected market")
+    normalized_audience = clean_ai_text(target_audience or "early target customers")
+    short_industry = normalized_industry.lower()
+
+    return normalize_analysis(
+        {
+            "startup_names": [
+                "LaunchPilot",
+                "MarketStep",
+                "FoundryPlan",
+            ],
+            "one_line_pitch": (
+                f"A focused {short_industry} venture built around: "
+                f"{normalized_idea}"
+            ),
+            "problem_statement": (
+                f"{normalized_audience} may need a clearer, easier way to solve "
+                "this problem without spending too much time comparing scattered options."
+            ),
+            "proposed_solution": (
+                "Start with a small, practical offer that solves one core customer problem, "
+                "then improve the product after collecting feedback from real users."
+            ),
+            "target_market": (
+                f"The initial market is {normalized_audience} within {normalized_industry}. "
+                "The first audience should be narrow enough to test demand quickly."
+            ),
+            "market_feasibility": (
+                "The idea is testable if the team validates real demand through interviews, "
+                "landing page signups, small pre-orders, or a limited pilot before investing heavily."
+            ),
+            "technical_feasibility": (
+                "The first version can be built with common web tools and simple operations. "
+                "Avoid advanced automation until the basic customer journey is proven."
+            ),
+            "financial_feasibility": (
+                "The project should begin with a lean budget. Early costs should focus on product setup, "
+                "customer acquisition tests, and basic support rather than broad marketing."
+            ),
+            "operational_feasibility": (
+                "Operations can stay simple at the start by limiting features, documenting the process, "
+                "and handling a small number of customers carefully."
+            ),
+            "legal_feasibility": (
+                "The team should review basic business registration, payment handling, privacy, refunds, "
+                "and any industry-specific requirements before launch."
+            ),
+            "risk_assessment": [
+                "Demand may be weaker than expected if the problem is not urgent.",
+                "Customer acquisition costs may rise if the audience is too broad.",
+                "The first version may become too complex if too many features are added early.",
+            ],
+            "revenue_model": [
+                "Start with direct sales, subscriptions, service fees, or a simple package price.",
+                "Test one primary pricing model before adding multiple plans.",
+                "Use early customer feedback to adjust pricing and packaging.",
+            ],
+            "launch_roadmap": [
+                "Interview 10 to 20 target users and confirm the main problem.",
+                "Create a simple landing page or prototype to test interest.",
+                "Launch a small pilot with a limited feature set.",
+                "Measure signups, usage, retention, and willingness to pay.",
+            ],
+            "final_recommendation": (
+                "Proceed with a small validation phase before building a full product. "
+                "The idea is worth exploring if early users clearly understand the offer and show willingness to try or pay."
+            ),
+        }
+    )
+
+
 def get_openrouter_client():
     if not settings.OPENROUTER_API_KEY:
         raise ValueError("OPENROUTER_API_KEY is not configured")

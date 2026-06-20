@@ -1,9 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { RefreshCcw, Sparkles } from "lucide-react";
+import { Download, RefreshCcw, Sparkles } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { isUnauthorizedError } from "@/lib/api";
+import { downloadPdf } from "@/lib/download";
 import { getAnalyses, type Analysis } from "@/lib/workspace";
 import { WorkspaceEmptyState } from "./WorkspaceEmptyState";
 import { WorkspaceShell } from "./WorkspaceShell";
@@ -39,6 +39,7 @@ export function ToolGeneratorPage<Result>({
   emptyLabel,
   generate,
   renderResult,
+  getPdfExport,
 }: {
   title: string;
   description: string;
@@ -47,6 +48,7 @@ export function ToolGeneratorPage<Result>({
   emptyLabel: string;
   generate: (analysisId: number) => Promise<Result>;
   renderResult: (result: Result) => React.ReactNode;
+  getPdfExport?: (result: Result) => { endpoint: string; filename: string };
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -56,6 +58,7 @@ export function ToolGeneratorPage<Result>({
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -101,11 +104,6 @@ export function ToolGeneratorPage<Result>({
     };
   }, [router, searchParams]);
 
-  const selectedAnalysis = useMemo(
-    () => analyses.find((analysis) => String(analysis.id) === selectedAnalysisId) ?? null,
-    [analyses, selectedAnalysisId],
-  );
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
@@ -127,10 +125,33 @@ export function ToolGeneratorPage<Result>({
     }
   }
 
+  async function handleExportPdf() {
+    if (!result || !getPdfExport) {
+      return;
+    }
+
+    const pdfExport = getPdfExport(result);
+
+    try {
+      setIsExporting(true);
+      setError("");
+      await downloadPdf(pdfExport.endpoint, pdfExport.filename);
+    } catch (err) {
+      if (isUnauthorizedError(err)) {
+        router.replace(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+        return;
+      }
+
+      setError("PDF export failed. Please try again.");
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   return (
     <WorkspaceShell title={title} description={description}>
       {isLoading ? (
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+        <div className="grid gap-4">
           <div className="h-64 animate-pulse rounded-lg border border-border bg-card/80 p-6" />
           <div className="h-64 animate-pulse rounded-lg border border-border bg-card/80 p-6" />
         </div>
@@ -139,14 +160,14 @@ export function ToolGeneratorPage<Result>({
       {!isLoading && !error && analyses.length === 0 ? <WorkspaceEmptyState /> : null}
 
       {!isLoading && analyses.length > 0 ? (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+        <div className="grid gap-6">
           <Card className="bg-card/95">
             <CardHeader>
               <CardTitle className="text-xl">{buttonLabel}</CardTitle>
               <CardDescription>{emptyLabel}</CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="grid gap-4" onSubmit={handleSubmit}>
+              <form className="grid gap-4 lg:grid-cols-2" onSubmit={handleSubmit}>
                 <div className="grid gap-2">
                   <Label htmlFor={`${title}-analysis`}>Saved analysis</Label>
                   <Select
@@ -162,25 +183,28 @@ export function ToolGeneratorPage<Result>({
                   </Select>
                 </div>
 
-                {selectedAnalysis ? (
-                  <div className="rounded-lg border border-border bg-background/30 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Selected idea</p>
-                    <p className="mt-3 text-sm leading-6 text-foreground">{selectedAnalysis.one_line_pitch}</p>
-                  </div>
-                ) : null}
-
                 {error ? (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="lg:col-span-2">
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 ) : null}
 
-                <Button type="submit" className="w-full" isLoading={isGenerating} loadingText={loadingText}>
+                <Button
+                  type="submit"
+                  className="w-full sm:mx-auto sm:max-w-sm lg:col-span-2"
+                  isLoading={isGenerating}
+                  loadingText={loadingText}
+                >
                   {buttonLabel}
                 </Button>
 
                 {error ? (
-                  <Button type="button" variant="secondary" className="w-full" onClick={() => setError("")}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full sm:mx-auto sm:max-w-sm lg:col-span-2"
+                    onClick={() => setError("")}
+                  >
                     <RefreshCcw className="size-4" aria-hidden="true" />
                     Retry
                   </Button>
@@ -190,11 +214,26 @@ export function ToolGeneratorPage<Result>({
           </Card>
 
           <Card className="bg-card/95">
-            <CardHeader>
-              <CardTitle className="text-xl">Output</CardTitle>
-              <CardDescription>
-                {isGenerating ? "Analyzing your idea... this may take a few seconds." : "Generated content will appear here."}
-              </CardDescription>
+            <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <CardTitle className="text-xl">Output</CardTitle>
+                <CardDescription>
+                  {isGenerating ? "Analyzing your idea... this may take a few seconds." : "Generated content will appear here."}
+                </CardDescription>
+              </div>
+              {!isGenerating && result && getPdfExport ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full sm:w-auto"
+                  onClick={handleExportPdf}
+                  isLoading={isExporting}
+                  loadingText="Exporting..."
+                >
+                  <Download className="size-4" aria-hidden="true" />
+                  Export PDF
+                </Button>
+              ) : null}
             </CardHeader>
             <CardContent>
               {isGenerating ? (
@@ -216,9 +255,6 @@ export function ToolGeneratorPage<Result>({
                   <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
                     Pick one of your saved analyses and generate the next planning document.
                   </p>
-                  <Button asChild variant="secondary" className="mt-6">
-                    <Link href="/dashboard">Back to dashboard</Link>
-                  </Button>
                 </div>
               ) : null}
             </CardContent>

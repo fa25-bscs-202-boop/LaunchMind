@@ -170,6 +170,41 @@ def normalize_competitor_analysis(data: dict) -> dict:
     return normalized
 
 
+def build_fallback_competitor_analysis(analysis) -> dict:
+    industry = clean_text(analysis.industry or "the selected market")
+
+    return normalize_competitor_analysis(
+        {
+            "direct_competitors": [
+                f"Existing online providers in {industry}",
+                "Small local or niche providers serving the same customer need",
+                "New startups or simple tools focused on the same problem",
+            ],
+            "indirect_competitors": [
+                "Manual workflows such as spreadsheets, notes, or messaging apps",
+                "Informal service providers or social media sellers",
+                "General-purpose platforms that customers may already use",
+            ],
+            "competitor_strengths": (
+                "Existing alternatives may already have customer trust, lower switching friction, or familiar workflows."
+            ),
+            "competitor_weaknesses": (
+                "Many alternatives may be too broad, informal, inconsistent, or not focused on the exact target audience."
+            ),
+            "market_gap": analysis.market_feasibility,
+            "differentiation_strategy": (
+                "Differentiate through a narrower customer focus, clearer user experience, reliable support, and a practical first offer."
+            ),
+            "pricing_comparison": (
+                "Pricing should be tested against simple existing alternatives. Exact competitor pricing requires further market research."
+            ),
+            "recommendations": (
+                "Validate competitor categories through customer interviews, compare real alternatives users mention, and test positioning before launch."
+            ),
+        }
+    )
+
+
 def build_competitor_prompt(analysis) -> str:
     analysis_context = {
         "idea": analysis.idea,
@@ -199,7 +234,11 @@ substitutes.
 
 
 def generate_competitor_analysis(analysis) -> dict:
-    client = get_openrouter_client()
+    try:
+        client = get_openrouter_client()
+    except ValueError as error:
+        print(f"Competitor fallback used: {error}")
+        return build_fallback_competitor_analysis(analysis)
 
     try:
         completion = client.chat.completions.create(
@@ -210,13 +249,19 @@ def generate_competitor_analysis(analysis) -> dict:
             ],
         )
     except Exception as error:
-        raise ValueError(f"OpenRouter competitor request failed: {error}") from error
+        print(f"OpenRouter competitor request failed: {error}")
+        return build_fallback_competitor_analysis(analysis)
 
     response_text = completion.choices[0].message.content
 
     if not response_text:
-        raise ValueError("AI competitor response invalid: empty response")
+        print("AI competitor response invalid: empty response")
+        return build_fallback_competitor_analysis(analysis)
 
-    competitor_data = extract_json_from_text(response_text)
+    try:
+        competitor_data = extract_json_from_text(response_text)
+    except ValueError as error:
+        print(error)
+        return build_fallback_competitor_analysis(analysis)
 
     return normalize_competitor_analysis(competitor_data)

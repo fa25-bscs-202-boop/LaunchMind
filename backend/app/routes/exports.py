@@ -15,6 +15,7 @@ from app.services.export_service import (
     analysis_to_html,
     analysis_to_markdown,
     analysis_to_pdf,
+    competitor_to_pdf,
     mvp_to_pdf,
     pitch_to_pdf,
     report_to_pdf,
@@ -133,6 +134,25 @@ def export_swot_pdf(
     return pdf_response(
         swot_to_pdf(swot),
         f"launchmind-swot-{swot_id}.pdf",
+    )
+
+
+@router.get("/competitor/{competitor_id}/pdf")
+def export_competitor_pdf(
+    competitor_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    competitor = get_user_record(
+        CompetitorAnalysis,
+        competitor_id,
+        current_user.id,
+        db,
+        "Competitor analysis",
+    )
+    return pdf_response(
+        competitor_to_pdf(competitor),
+        f"launchmind-competitor-{competitor_id}.pdf",
     )
 
 

@@ -161,6 +161,42 @@ def normalize_swot_analysis(data: dict) -> dict:
     return normalized
 
 
+def build_fallback_swot_analysis(analysis) -> dict:
+    risks = parse_list(analysis.risk_assessment)
+    roadmap = parse_list(analysis.launch_roadmap)
+
+    return normalize_swot_analysis(
+        {
+            "strengths": [
+                analysis.one_line_pitch,
+                "The concept can be tested with a narrow target audience before large investment.",
+                "The saved analysis gives a clear starting point for product and market validation.",
+            ],
+            "weaknesses": [
+                "Demand and willingness to pay still require validation.",
+                "The first version may become too broad if features are not limited.",
+                "Operational details may need refinement after user feedback.",
+            ],
+            "opportunities": [
+                "A small pilot can confirm which customer segment responds best.",
+                "Early feedback can shape pricing, positioning, and product scope.",
+                *(roadmap[:2] if roadmap else ["The launch roadmap can be converted into phased implementation steps."]),
+            ],
+            "threats": risks[:3]
+            or [
+                "Existing alternatives may already satisfy some customer needs.",
+                "Customer acquisition may be difficult if the audience is too broad.",
+                "Costs may increase if the MVP scope expands too quickly.",
+            ],
+            "strategic_recommendations": [
+                "Run interviews with target users before building advanced features.",
+                "Launch a simple pilot and measure engagement carefully.",
+                "Keep the MVP focused on the highest priority customer problem.",
+            ],
+        }
+    )
+
+
 def build_swot_prompt(analysis) -> str:
     analysis_context = {
         "idea": analysis.idea,
@@ -195,7 +231,11 @@ and threats, and practical strategic recommendations.
 
 
 def generate_swot_analysis(analysis) -> dict:
-    client = get_openrouter_client()
+    try:
+        client = get_openrouter_client()
+    except ValueError as error:
+        print(f"SWOT fallback used: {error}")
+        return build_fallback_swot_analysis(analysis)
 
     try:
         completion = client.chat.completions.create(
@@ -206,13 +246,19 @@ def generate_swot_analysis(analysis) -> dict:
             ],
         )
     except Exception as error:
-        raise ValueError(f"OpenRouter SWOT request failed: {error}") from error
+        print(f"OpenRouter SWOT request failed: {error}")
+        return build_fallback_swot_analysis(analysis)
 
     response_text = completion.choices[0].message.content
 
     if not response_text:
-        raise ValueError("AI SWOT response invalid: empty response")
+        print("AI SWOT response invalid: empty response")
+        return build_fallback_swot_analysis(analysis)
 
-    swot_data = extract_json_from_text(response_text)
+    try:
+        swot_data = extract_json_from_text(response_text)
+    except ValueError as error:
+        print(error)
+        return build_fallback_swot_analysis(analysis)
 
     return normalize_swot_analysis(swot_data)
