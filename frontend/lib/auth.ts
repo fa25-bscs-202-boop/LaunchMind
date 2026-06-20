@@ -95,3 +95,17 @@ export async function getCurrentUser() {
     method: "GET",
   });
 }
+
+export async function forgotPassword(email: string) {
+  return apiRequest<MessageResponse>("/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(email: string, code: string, newPassword: string) {
+  return apiRequest<MessageResponse>("/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ email, code, new_password: newPassword }),
+  });
+}

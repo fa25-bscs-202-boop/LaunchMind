@@ -1,18 +1,20 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { ScrollRevealActivator } from "./components/ScrollRevealActivator";
 import { createMetadata } from "../lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "LaunchMind - AI Content Platform for GEO, SEO & AI Search",
-  description: "AI-powered content platform for GEO, SEO and AI search.",
+  title: "LaunchMind AI | Startup Idea Generator and Planning Workspace",
+  description:
+    "Generate startup ideas, feasibility reports, pitch decks, SWOT analysis, competitor research, and MVP plans in one LaunchMind AI workspace.",
   path: "/",
   keywords: [
-    "LaunchMind",
-    "GEO content",
-    "SEO content",
-    "AI search",
-    "content platform",
+    "LaunchMind AI",
+    "startup idea generator",
+    "feasibility reports",
+    "pitch deck generator",
+    "MVP planning",
   ],
 });
 
@@ -55,9 +57,43 @@ const features = [
   },
 ];
 
+function StickyNav() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[rgba(8,8,8,0.86)] backdrop-blur-xl">
+      <nav className="container-page flex min-h-[72px] items-center justify-between gap-4 py-3">
+        <Link href="/" className="text-base font-bold text-[var(--text)] sm:text-lg">
+          LaunchMind AI
+        </Link>
+        <div className="hidden items-center gap-6 text-sm text-[var(--muted)] md:flex">
+          <Link href="#features" className="nav-link">
+            Features
+          </Link>
+          <Link href="/pricing" className="nav-link">
+            Pricing
+          </Link>
+          <Link href="/login" className="nav-link">
+            Login
+          </Link>
+          <Link href="/register" className="btn-primary">
+            Get Started
+          </Link>
+        </div>
+        <div className="flex items-center gap-2 md:hidden">
+          <Link href="/login" className="btn-secondary px-4 py-2.5 text-sm">
+            Login
+          </Link>
+          <Link href="/register" className="btn-primary px-4 py-2.5 text-sm">
+            Get Started
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
+}
+
 function HeroSection() {
   return (
-    <section className="px-4 py-24 sm:py-32">
+    <section className="px-4 py-20 sm:py-28">
       <div className="container-page text-center">
         <div
           className="scroll-reveal mx-auto mb-7 w-fit rounded-full border border-[rgba(212,175,55,0.18)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--accent)]"
@@ -226,6 +262,7 @@ function CtaSection() {
         </p>
         <Link href="/register" className="btn-primary mt-8">
           Start Free
+          <ArrowRight className="ml-2 inline-block h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
     </section>
@@ -265,6 +302,15 @@ function PageFooter() {
             Malik Rehman
           </a>
         </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+          <Link href="/privacy-policy" className="nav-link">
+            Privacy Policy
+          </Link>
+          <Link href="/terms-of-service" className="nav-link">
+            Terms of Service
+          </Link>
+        </div>
       </div>
     </footer>
   );
@@ -274,6 +320,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--text)] bg-grid-background">
       <ScrollRevealActivator />
+      <StickyNav />
       <HeroSection />
       <FeaturesSection />
       <CtaSection />

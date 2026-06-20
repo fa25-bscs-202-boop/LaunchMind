@@ -6,7 +6,10 @@ import { Navbar } from "./Navbar";
 
 export function SmartNavbar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isNoSidebarPage = ["/", "/login", "/register", "/verify-email"].includes(pathname) || pathname.startsWith("/oauth");
+  const isNoSidebarPage =
+    ["/", "/login", "/register", "/verify-email", "/forgot-password", "/privacy-policy", "/terms-of-service"].includes(
+      pathname,
+    ) || pathname.startsWith("/oauth");
 
   useEffect(() => {
     if (isNoSidebarPage) {

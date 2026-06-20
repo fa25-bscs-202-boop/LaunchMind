@@ -155,6 +155,12 @@ export function LoginForm() {
           Continue
         </Button>
 
+        <div className="text-center text-sm">
+          <Link href="/forgot-password" className="font-medium text-primary transition hover:text-primary/85">
+            Forgot password?
+          </Link>
+        </div>
+
         <p className="text-center text-sm text-muted-foreground">
           New to LaunchMind?{" "}
           <Link href="/register" className="font-medium text-primary transition hover:text-primary/85">

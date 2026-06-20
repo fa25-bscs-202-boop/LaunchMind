@@ -209,6 +209,18 @@ export function RegisterForm() {
           Create account
         </Button>
 
+        <p className="text-center text-xs leading-5 text-muted-foreground">
+          By creating an account, you agree to our{" "}
+          <Link href="/terms-of-service" className="font-medium text-primary transition hover:text-primary/85">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy-policy" className="font-medium text-primary transition hover:text-primary/85">
+            Privacy Policy
+          </Link>
+          .
+        </p>
+
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link href="/login" className="font-medium text-primary transition hover:text-primary/85">

@@ -217,6 +217,8 @@ export const publicSitemapRoutes: IndexedRoute[] = [
   { path: "/pricing", changeFrequency: "monthly", priority: 0.65 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.45 },
+  { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.35 },
+  { path: "/terms-of-service", changeFrequency: "yearly", priority: 0.35 },
   { path: "/ai-tools", changeFrequency: "weekly", priority: 0.95 },
   { path: "/blog", changeFrequency: "weekly", priority: 0.75 },
   { path: "/jobs", changeFrequency: "weekly", priority: 0.7 },

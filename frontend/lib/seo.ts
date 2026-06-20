@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "LaunchMind",
+  name: "LaunchMind AI",
   url: (process.env.NEXT_PUBLIC_SITE_URL || "https://launchmind.app").replace(/\/$/, ""),
-  description: "AI-powered content platform for GEO, SEO and AI search.",
-  ogImage: "/launchmind-og.svg",
+  description:
+    "LaunchMind AI helps founders, students, and early teams turn rough startup ideas into structured plans, reports, pitch decks, SWOT analysis, competitor research, and MVP roadmaps.",
+  ogImage: "/launchmind-og.jpg",
   locale: "en_US",
+  keywords: [
+    "LaunchMind AI",
+    "startup idea generator",
+    "startup planning tools",
+    "feasibility report generator",
+    "pitch deck generator",
+    "SWOT analysis tool",
+    "MVP planner",
+  ],
 };
 
 export type SeoPage = {
@@ -36,9 +46,12 @@ export function createMetadata({
 
   return {
     metadataBase: new URL(siteConfig.url),
+    applicationName: siteConfig.name,
     title,
     description,
-    keywords,
+    keywords: [...siteConfig.keywords, ...keywords],
+    creator: "LaunchMind AI",
+    publisher: "LaunchMind AI",
     alternates: {
       canonical: path,
     },
@@ -64,6 +77,7 @@ export function createMetadata({
       description,
       images: [imageUrl],
     },
+    category: "technology",
     robots: noIndex
       ? {
           index: false,
@@ -92,14 +106,8 @@ export function createMetadata({
 }
 
 export const defaultMetadata = createMetadata({
-  title: "LaunchMind - AI Content Platform for GEO, SEO & AI Search",
+  title: "LaunchMind AI | Startup Planning, Reports, Pitch Decks and MVP Tools",
   description: siteConfig.description,
   path: "/",
-  keywords: [
-    "LaunchMind",
-    "GEO content",
-    "SEO content",
-    "AI search",
-    "content platform",
-  ],
+  keywords: ["AI tools", "business name generator", "startup planning software"],
 });

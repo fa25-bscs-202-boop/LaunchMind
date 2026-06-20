@@ -9,13 +9,15 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
 from app.schemas.auth import (
+    ForgotPasswordRequest,
     ResendCodeRequest,
+    ResetPasswordRequest,
     UserLogin,
     UserRegister,
     UserResponse,
     VerifyEmailRequest,
 )
-from app.services.email_service import send_verification_email
+from app.services.email_service import send_password_reset_email, send_verification_email
 from app.utils.dependencies import get_current_user
 from app.utils.email import is_gmail_address
 from app.utils.security import create_access_token, hash_password, verify_password
@@ -88,6 +90,17 @@ def send_code_or_raise(email: str, code: str):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Verification email could not be sent. Please try again.",
+        ) from error
+
+
+def send_password_reset_code_or_raise(email: str, code: str):
+    try:
+        send_password_reset_email(email, code)
+    except Exception as error:
+        print(f"Password reset email failed for {email}: {error}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Password reset email could not be sent. Please try again.",
         ) from error
 
 
@@ -196,6 +209,56 @@ def resend_code(request: ResendCodeRequest, db: Session = Depends(get_db)):
     return {"message": GENERIC_RESEND_MESSAGE}
 
 
+@router.post("/forgot-password")
+def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    email = request.email.lower()
+    user = db.query(User).filter(User.email == email).first()
+
+    if user and user.is_verified:
+        code = save_new_verification_code(user, db)
+        send_password_reset_code_or_raise(email, code)
+
+    return {
+        "message": "If this account exists, a password reset code has been sent.",
+    }
+
+
+@router.post("/reset-password")
+def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db)):
+    email = request.email.lower()
+    user = db.query(User).filter(User.email == email).first()
+
+    if (
+        not user
+        or not user.is_verified
+        or not user.verification_code_hash
+        or is_code_expired(user.verification_code_expires_at)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset code.",
+        )
+
+    if not verify_password(request.code, user.verification_code_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset code.",
+        )
+
+    if is_password_too_similar(request.new_password, user.name, email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=PASSWORD_SAFETY_MESSAGE,
+        )
+
+    user.password_hash = hash_password(request.new_password)
+    user.verification_code_hash = None
+    user.verification_code_expires_at = None
+    db.commit()
+
+    return {"message": "Password updated successfully."}
+
+
 @router.post("/login")
 def login_user(user_data: UserLogin, db: Session = Depends(get_db)):
     email = user_data.email.lower()
@@ -280,4 +343,3 @@ def login_for_access_token(
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
-

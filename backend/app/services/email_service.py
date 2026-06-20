@@ -37,3 +37,30 @@ def send_verification_email(to_email: str, code: str):
         if settings.SMTP_USERNAME and settings.SMTP_PASSWORD:
             smtp.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
         smtp.send_message(message)
+
+
+def send_password_reset_email(to_email: str, code: str):
+    """Send a six-digit password reset code, or print it in development."""
+    if not is_smtp_configured():
+        print("SMTP not configured. Using development console output.")
+        print("================================")
+        print("LaunchMind Password Reset Code")
+        print(f"Email: {to_email}")
+        print(f"Code: {code}")
+        print("================================")
+        return
+
+    message = EmailMessage()
+    message["Subject"] = "LaunchMind AI password reset code"
+    message["From"] = settings.SMTP_FROM_EMAIL
+    message["To"] = to_email
+    message.set_content(
+        f"Your LaunchMind password reset code is: {code}\n"
+        "This code will expire in 10 minutes."
+    )
+
+    with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=15) as smtp:
+        smtp.starttls()
+        if settings.SMTP_USERNAME and settings.SMTP_PASSWORD:
+            smtp.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
+        smtp.send_message(message)

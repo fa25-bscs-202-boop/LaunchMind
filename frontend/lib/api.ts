@@ -42,10 +42,19 @@ export async function apiRequest<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+  } catch {
+    throw new ApiError(
+      "We could not reach LaunchMind right now. Please check your connection and try again.",
+      0,
+    );
+  }
 
   const contentType = response.headers.get("content-type");
   const isJson = contentType?.includes("application/json");
@@ -62,4 +71,3 @@ export async function apiRequest<T>(
 
   return data as T;
 }
-

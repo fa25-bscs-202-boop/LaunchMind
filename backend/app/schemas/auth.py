@@ -23,6 +23,16 @@ class ResendCodeRequest(BaseModel):
     email: EmailStr
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    code: str
+    new_password: str
+
+
 class UserResponse(BaseModel):
     id: int
     name: str
