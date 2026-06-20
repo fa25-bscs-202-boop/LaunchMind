@@ -229,10 +229,16 @@ function PageFooter() {
         </div>
 
         <div className="flex flex-wrap items-center gap-4 text-sm">
-          <Link href="/privacy-policy" className="nav-link">
+          <Link href="/pricing" className="nav-link">
+            Pricing
+          </Link>
+          <Link href="/contact" className="nav-link">
+            Contact
+          </Link>
+          <Link href="/privacy" className="nav-link">
             Privacy Policy
           </Link>
-          <Link href="/terms-of-service" className="nav-link">
+          <Link href="/terms" className="nav-link">
             Terms of Service
           </Link>
         </div>

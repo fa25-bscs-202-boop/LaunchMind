@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Globe, Lock, Mail } from "lucide-react";
 
@@ -15,6 +15,7 @@ import { loginUser } from "../../lib/auth";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
@@ -37,8 +38,8 @@ export function LoginForm() {
 
     if (!password) {
       nextErrors.password = "Password is required.";
-    } else if (password.length < 6) {
-      nextErrors.password = "Password must be at least 6 characters.";
+    } else if (password.length < 8) {
+      nextErrors.password = "Password must be at least 8 characters.";
     }
 
     setFieldErrors(nextErrors);
@@ -56,9 +57,11 @@ export function LoginForm() {
     try {
       setIsLoading(true);
       await loginUser(email.trim(), password);
-      router.push("/");
+      const nextPath = searchParams.get("next");
+      router.push(nextPath && nextPath.startsWith("/") ? nextPath : "/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed.");
+      const message = err instanceof Error ? err.message : "Login failed.";
+      setError(message === "Email already registered" ? "This email is already registered. Try logging in instead." : message);
     } finally {
       setIsLoading(false);
     }
@@ -156,16 +159,34 @@ export function LoginForm() {
         </Button>
 
         <div className="text-center text-sm">
-          <Link href="/forgot-password" className="font-medium text-primary transition hover:text-primary/85">
+          <Link
+            href="/forgot-password"
+            className="inline-flex min-h-11 items-center justify-center rounded-full px-4 font-medium text-primary transition hover:text-primary/85"
+          >
             Forgot password?
           </Link>
         </div>
 
         <p className="text-center text-sm text-muted-foreground">
           New to LaunchMind?{" "}
-          <Link href="/register" className="font-medium text-primary transition hover:text-primary/85">
+          <Link
+            href="/register"
+            className="inline-flex min-h-11 items-center justify-center rounded-full px-2 font-medium text-primary transition hover:text-primary/85"
+          >
             Create an account
           </Link>
+        </p>
+
+        <p className="text-center text-xs leading-5 text-muted-foreground">
+          By continuing, you agree to our{" "}
+          <Link href="/terms" className="font-medium text-primary transition hover:text-primary/85">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="font-medium text-primary transition hover:text-primary/85">
+            Privacy Policy
+          </Link>
+          .
         </p>
       </form>
     </div>

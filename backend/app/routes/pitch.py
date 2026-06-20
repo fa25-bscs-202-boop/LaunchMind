@@ -34,9 +34,10 @@ def generate_pitch(
     try:
         pitch_data = generate_pitch_deck(analysis)
     except ValueError as error:
+        print(f"Pitch generation error: {error}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(error),
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Pitch deck generation is temporarily unavailable. Please try again.",
         ) from error
 
     pitch_deck = PitchDeck(

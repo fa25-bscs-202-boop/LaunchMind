@@ -46,7 +46,7 @@ def is_password_too_similar(password: str, name: str, email: str) -> bool:
     normalized_email = email.strip().lower()
     email_username = normalized_email.split("@")[0]
 
-    if len(password) < 6:
+    if len(password) < 8:
         return True
 
     if normalized_password == normalized_name:

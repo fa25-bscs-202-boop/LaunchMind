@@ -36,9 +36,10 @@ def analyze_competitors(
     try:
         competitor_data = generate_competitor_analysis(analysis)
     except ValueError as error:
+        print(f"Competitor analysis generation error: {error}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(error),
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Competitor analysis is temporarily unavailable. Please try again.",
         ) from error
 
     competitor_analysis = CompetitorAnalysis(

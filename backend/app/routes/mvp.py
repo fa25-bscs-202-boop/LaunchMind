@@ -36,9 +36,10 @@ def generate_mvp(
     try:
         mvp_data = generate_mvp_plan(analysis)
     except ValueError as error:
+        print(f"MVP generation error: {error}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(error),
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="MVP plan generation is temporarily unavailable. Please try again.",
         ) from error
 
     mvp_plan = MVPPlan(

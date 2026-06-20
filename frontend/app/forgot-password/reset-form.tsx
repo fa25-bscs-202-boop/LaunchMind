@@ -60,8 +60,8 @@ export function ForgotPasswordForm() {
 
     if (!password) {
       nextErrors.password = "New password is required.";
-    } else if (password.length < 6) {
-      nextErrors.password = "Password must be at least 6 characters.";
+    } else if (password.length < 8) {
+      nextErrors.password = "Password must be at least 8 characters.";
     }
 
     setFieldErrors(nextErrors);
@@ -180,7 +180,7 @@ export function ForgotPasswordForm() {
           {fieldErrors.password ? (
             <p className="text-sm leading-5 text-red-200">{fieldErrors.password}</p>
           ) : (
-            <p className="text-sm leading-5 text-muted-foreground">Use at least 6 characters.</p>
+            <p className="text-sm leading-5 text-muted-foreground">Use at least 8 characters.</p>
           )}
         </div>
 
@@ -203,7 +203,10 @@ export function ForgotPasswordForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         Remembered it?{" "}
-        <Link href="/login" className="font-medium text-primary transition hover:text-primary/85">
+        <Link
+          href="/login"
+          className="inline-flex min-h-11 items-center justify-center rounded-full px-2 font-medium text-primary transition hover:text-primary/85"
+        >
           Back to login
         </Link>
       </p>

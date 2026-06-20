@@ -16,22 +16,22 @@ const plans = [
   {
     name: "Free",
     price: "$0",
-    description: "For exploring the public experience and understanding the product direction.",
-    items: ["Access to public pages", "Product updates", "Basic account access"],
+    description: "For testing the workspace and preparing a few early idea drafts.",
+    items: ["Basic idea analysis", "Limited saved outputs", "Starter planning flow"],
     href: "/register",
   },
   {
     name: "Pro",
     price: "$12",
-    description: "For individuals who want deeper product access and closer engagement as LaunchMind evolves.",
-    items: ["Priority support", "Expanded access", "Early feature visibility"],
+    description: "For founders and freelancers who need more complete planning documents.",
+    items: ["Full feasibility reports", "Pitch deck content", "SWOT and competitor tools"],
     href: "/register",
   },
   {
-    name: "University",
+    name: "Team",
     price: "Custom",
-    description: "For programs, incubators, and partner organizations that need tailored coordination.",
-    items: ["Team onboarding", "Program support", "Custom planning"],
+    description: "For classes, incubators, and small teams working across multiple startup ideas.",
+    items: ["Team onboarding", "Shared planning support", "Custom rollout guidance"],
     href: "/contact",
   },
 ];
@@ -50,9 +50,9 @@ export default function PricingPage() {
         <div className="container-page">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-semibold uppercase text-[var(--accent)]">Pricing</p>
-            <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Simple plans for a cleaner LaunchMind experience.</h1>
+            <h1 className="mt-4 text-4xl font-bold sm:text-5xl">Simple plans for early-stage planning.</h1>
             <p className="mt-5 text-base leading-7 text-[var(--muted)] sm:text-lg">
-              Choose a plan that matches your level of interest and how closely you want to work with the product.
+              Choose a starting point that fits your idea stage. Payment integration can stay lightweight while the product keeps improving.
             </p>
           </div>
 

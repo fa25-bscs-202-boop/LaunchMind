@@ -21,30 +21,30 @@ export const publicSitemapRoutes: IndexedRoute[] = [
   { path: "/about", changeFrequency: "monthly", priority: 0.65 },
   { path: "/blog", changeFrequency: "weekly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.55 },
-  { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.35 },
-  { path: "/terms-of-service", changeFrequency: "yearly", priority: 0.35 },
+  { path: "/privacy", changeFrequency: "yearly", priority: 0.35 },
+  { path: "/terms", changeFrequency: "yearly", priority: 0.35 },
 ];
 
 export const blogArticles = [
   {
-    title: "Why LaunchMind now uses a simpler public experience",
+    title: "How to write a startup feasibility report that feels realistic",
     description:
-      "A short note on reducing navigation clutter and focusing the site on essential public pages.",
-    category: "Product update",
+      "A practical walkthrough for turning a rough startup concept into a report that sounds credible, useful, and presentation-ready.",
+    category: "Planning guide",
     readTime: "4 min read",
   },
   {
-    title: "What belongs on a clear software pricing page",
+    title: "Startup SWOT analysis: what to include and what to skip",
     description:
-      "How to keep pricing pages useful when your product direction is evolving and feature scope is changing.",
-    category: "Product strategy",
+      "A clear guide to building a SWOT analysis that actually helps with next-step decisions instead of repeating generic advice.",
+    category: "Strategy",
     readTime: "5 min read",
   },
   {
-    title: "How to structure an FAQ page that actually helps users",
+    title: "MVP planning for beginners: start smaller than you think",
     description:
-      "A practical guide to writing FAQs that reduce confusion instead of repeating marketing copy.",
-    category: "Content design",
+      "Why the first version of a startup idea should focus on the smallest useful workflow and how to define it well.",
+    category: "Product planning",
     readTime: "4 min read",
   },
 ];

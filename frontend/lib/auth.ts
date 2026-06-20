@@ -1,6 +1,7 @@
 ﻿import { apiRequest } from "./api";
 
 const TOKEN_KEY = "launchmind_token";
+const COOKIE_KEY = "launchmind_session";
 export type User = {
   id: number;
   name: string;
@@ -23,12 +24,29 @@ type MessageResponse = {
   message: string;
 };
 
+function persistSessionCookie(token: string) {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  document.cookie = `${COOKIE_KEY}=${encodeURIComponent(token)}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+}
+
+function clearSessionCookie() {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  document.cookie = `${COOKIE_KEY}=; path=/; max-age=0; SameSite=Lax`;
+}
+
 export function saveToken(token: string) {
   if (typeof window === "undefined") {
     return;
   }
 
   localStorage.setItem(TOKEN_KEY, token);
+  persistSessionCookie(token);
 }
 
 export function getToken() {
@@ -53,6 +71,7 @@ export function logoutUser() {
   }
 
   localStorage.removeItem(TOKEN_KEY);
+  clearSessionCookie();
 }
 
 export async function registerUser(

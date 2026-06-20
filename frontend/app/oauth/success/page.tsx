@@ -17,7 +17,7 @@ export default function OAuthSuccessPage() {
     }
 
     saveToken(token);
-    router.replace("/");
+    router.replace("/dashboard");
   }, [router]);
 
   return (
@@ -34,7 +34,6 @@ export default function OAuthSuccessPage() {
     </main>
   );
 }
-
 
 
 

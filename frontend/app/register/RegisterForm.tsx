@@ -57,8 +57,8 @@ export function RegisterForm() {
 
     if (!password) {
       nextErrors.password = "Password is required.";
-    } else if (password.length < 6) {
-      nextErrors.password = "Password must be at least 6 characters.";
+    } else if (password.length < 8) {
+      nextErrors.password = "Password must be at least 8 characters.";
     }
 
     setFieldErrors(nextErrors);
@@ -78,7 +78,12 @@ export function RegisterForm() {
       const response = await registerUser(name.trim(), email.trim(), password);
       router.push(`/verify-email?email=${encodeURIComponent(response.email)}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed.");
+      const message = err instanceof Error ? err.message : "Registration failed.";
+      setError(
+        message === "Email already registered"
+          ? "An account may already exist for this email. Try logging in or use a different email."
+          : message,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -194,7 +199,7 @@ export function RegisterForm() {
             </p>
           ) : (
             <p id="password-help" className="text-sm leading-5 text-muted-foreground">
-              Use at least 6 characters.
+              Use at least 8 characters.
             </p>
           )}
         </div>
@@ -211,11 +216,11 @@ export function RegisterForm() {
 
         <p className="text-center text-xs leading-5 text-muted-foreground">
           By creating an account, you agree to our{" "}
-          <Link href="/terms-of-service" className="font-medium text-primary transition hover:text-primary/85">
+          <Link href="/terms" className="font-medium text-primary transition hover:text-primary/85">
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="/privacy-policy" className="font-medium text-primary transition hover:text-primary/85">
+          <Link href="/privacy" className="font-medium text-primary transition hover:text-primary/85">
             Privacy Policy
           </Link>
           .
@@ -223,7 +228,10 @@ export function RegisterForm() {
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-primary transition hover:text-primary/85">
+          <Link
+            href="/login"
+            className="inline-flex min-h-11 items-center justify-center rounded-full px-2 font-medium text-primary transition hover:text-primary/85"
+          >
             Log in
           </Link>
         </p>

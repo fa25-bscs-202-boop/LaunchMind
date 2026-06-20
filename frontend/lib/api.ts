@@ -13,6 +13,7 @@ export class ApiError extends Error {
 
 type ApiRequestOptions = RequestInit & {
   token?: string | null;
+  timeoutMs?: number;
 };
 
 function getStoredToken() {
@@ -31,8 +32,9 @@ export async function apiRequest<T>(
   endpoint: string,
   options: ApiRequestOptions = {},
 ): Promise<T> {
-  const token = options.token ?? getStoredToken();
-  const headers = new Headers(options.headers);
+  const { timeoutMs = 30000, token: providedToken, headers: initialHeaders, ...requestOptions } = options;
+  const token = providedToken ?? getStoredToken();
+  const headers = new Headers(initialHeaders);
 
   if (!headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
@@ -42,18 +44,30 @@ export async function apiRequest<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   let response: Response;
 
   try {
     response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
+      ...requestOptions,
       headers,
+      signal: requestOptions.signal ?? controller.signal,
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new ApiError(
+        "This request is taking longer than expected. Please try again.",
+        408,
+      );
+    }
+
     throw new ApiError(
       "We could not reach LaunchMind right now. Please check your connection and try again.",
       0,
     );
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   const contentType = response.headers.get("content-type");

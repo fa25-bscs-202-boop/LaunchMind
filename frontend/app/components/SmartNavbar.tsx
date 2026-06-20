@@ -13,7 +13,7 @@ export function SmartNavbar({ children }: { children: React.ReactNode }) {
   return (
     <>
       {!isHeaderlessPage ? <SiteHeader /> : null}
-      <main>{children}</main>
+      <div id="main-content">{children}</div>
     </>
   );
 }

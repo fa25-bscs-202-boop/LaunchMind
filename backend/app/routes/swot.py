@@ -36,9 +36,10 @@ def generate_swot(
     try:
         swot_data = generate_swot_analysis(analysis)
     except ValueError as error:
+        print(f"SWOT generation error: {error}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(error),
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="SWOT analysis is temporarily unavailable. Please try again.",
         ) from error
 
     swot_analysis = SWOTAnalysis(

@@ -88,10 +88,6 @@ body {
 
 @media (min-width: 1024px) {
   .container-page {
-    width: min(calc(100% - 280px - 32px), 1120px);
-  }
-
-  .no-sidebar-page .container-page {
     width: min(calc(100% - 32px), 1120px);
   }
 }
@@ -120,6 +116,17 @@ body.sidebar-open {
 
 .nav-link:hover {
   color: var(--text);
+}
+
+.skip-link {
+  transition:
+    transform 180ms var(--ease-premium),
+    box-shadow 180ms var(--ease-premium);
+}
+
+.skip-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.22);
 }
 
 .btn-primary,
