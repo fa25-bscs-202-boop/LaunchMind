@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { BarChart3, Boxes, FileText, LayoutDashboard, Presentation, Radar, ShieldCheck } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { BarChart3, Boxes, FileText, LayoutDashboard, LogOut, Presentation, Radar, ShieldCheck } from "lucide-react";
 
+import { getCurrentUser, logoutUser, type User } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 const workspaceLinks = [
@@ -26,6 +28,70 @@ export function WorkspaceShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadUser() {
+      try {
+        const currentUser = await getCurrentUser();
+        if (isMounted) {
+          setUser(currentUser);
+        }
+      } catch {
+        if (isMounted) {
+          setUser(null);
+        }
+      }
+    }
+
+    void loadUser();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const initials = useMemo(() => {
+    const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "U";
+    return displayName
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase();
+  }, [user]);
+
+  function handleLogout() {
+    logoutUser();
+    router.replace("/login");
+  }
+
+  function renderAccountBox() {
+    return (
+      <div className="rounded-lg border border-border bg-card/80 p-4 shadow-sm shadow-black/10">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-primary/25 bg-primary/12 text-sm font-bold text-primary">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-foreground">{user?.name || "Account"}</p>
+            <p className="truncate text-xs leading-5 text-muted-foreground">{user?.email || "Signed in"}</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-background/40 px-3 text-sm font-semibold text-muted-foreground transition hover:border-primary/35 hover:bg-primary/10 hover:text-foreground"
+        >
+          <LogOut className="size-4" aria-hidden="true" />
+          Logout
+        </button>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-foreground">
@@ -57,12 +123,7 @@ export function WorkspaceShell({
           })}
         </nav>
 
-        <div className="mt-auto rounded-lg border border-border bg-card/70 p-4">
-          <p className="text-sm font-semibold text-foreground">Workspace</p>
-          <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            Manage your saved ideas and generate the next planning step.
-          </p>
-        </div>
+        <div className="mt-auto">{renderAccountBox()}</div>
       </aside>
 
       <div className="lg:pl-72">
@@ -86,6 +147,7 @@ export function WorkspaceShell({
               </Link>
             ))}
           </nav>
+          <div className="mt-3">{renderAccountBox()}</div>
         </header>
 
         <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-10 xl:px-12">
